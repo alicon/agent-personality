@@ -29,7 +29,7 @@ Before uploading any artifacts, verify that the authenticated account is abelcab
 
 ## Remaining work
 
-Implement and test the trainer, dataset preparation, and chat lab. Then propose a bounded GPU smoke run with an explicit timeout, persistence destination, expected cost, and cumulative spend allowance. The $1,000–$2,000 campaign range remains a planning budget.
+Implement and test the trainer, dataset preparation, and chat lab under the [preparation phase below $100](preparation-phase.md). Then propose a bounded GPU smoke run with an explicit timeout, persistence destination, expected cost, and cumulative spend allowance. Funding can wait until that run is ready. The $1,000–$2,000 campaign range remains a planning budget.
 
 Billing balance and successful GPU scheduling have not been established by repository creation. Account setup does not establish training eligibility or capacity.
 

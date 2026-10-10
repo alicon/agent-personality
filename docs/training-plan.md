@@ -4,6 +4,8 @@ Date: October 10, 2026. Status: build and study plan. [Local login and private H
 
 Abel wants the enjoyment of training a real model now, with a publication and potential business asset as longer-term goals. The planning budget is $1,000–$2,000 using rented GPUs. That range is not authorization to spend.
 
+The current execution phase is [local preparation and short smoke tests below $100](preparation-phase.md), with a $90 working limit and $9 billing reserve across the whole phase. Build locally before funding compute. This preparation phase precedes the full corpus and research campaign described below.
+
 ## The first thing to build
 
 A private personality lab: train an adapter for Qwen3-14B, save it as a versioned artifact, and chat with the same model with the adapter off or on. Add prompt-only and combined conditions, plus a blind comparison mode.
@@ -41,7 +43,7 @@ Lock library versions and the container after a working smoke test. Do not use m
 ## Accounts and setup Abel needs
 
 1. Completed: Abel supplied the [abelcable account](https://huggingface.co/abelcable) and authorized local browser/device login. [Setup record](setup.md).
-2. Enable compute billing and fund a small initial credit balance when ready to run. Start with approximately $50–$100 rather than funding the full campaign immediately.
+2. Wait to fund compute until the first smoke run is concrete and reviewable. Choose the smallest practical initial credit purchase then; account funding and actual job spending are distinct. Do not enable automatic refills.
 3. Completed: local CLI authentication and private model/dataset repository creation. Check Jobs authorization separately before the first run. Keep credentials in local login or job secrets, outside chat. [Token documentation](https://huggingface.co/docs/hub/security-tokens).
 4. Approve a concrete first run after the trainer, dataset, expected runtime, and cost cap are reviewable.
 
@@ -95,7 +97,7 @@ Suggested allocation for a $1,500 campaign:
 
 These are envelopes, not service quotes or a promise of publication-quality results at that cost. Runtime depends on tokens, hardware throughput, and experiment scope. Use the $1,000 end for one primary model and a narrower study; use up to $2,000 for replication and extra human validation. Do not run an always-on GPU endpoint by default.
 
-Set a first-run allowance separately, initially no more than $50–$100 for the build session, and price it from measured throughput. A notebook timeout limits one job, not the whole campaign; record cumulative spending.
+For the current preparation phase, use the [staged budget and stop rules](preparation-phase.md). Target $20–$40 cumulatively, enforce the $90 working limit with a $9 reserve, and limit any proposed individual GPU job to two hours and $5 of GPU charges. A provider timeout limits one job, not the whole campaign; record and reconcile cumulative costs. The local estimator does not yet enforce cloud launches.
 
 ## From the toy to a paper
 

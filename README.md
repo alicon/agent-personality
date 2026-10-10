@@ -10,6 +10,8 @@ This repository contains a research review, a training and paper plan, a commerc
 
 Hugging Face local login and two private artifact repositories are ready under abelcable. The trainer and chat lab remain planned. See [setup and reproduction](docs/setup.md).
 
+The current milestone is [preparation below $100](docs/preparation-phase.md): build locally first, then run short GPU smoke tests. A tested local cost calculator is available; cloud submission controls and the training harness remain planned.
+
 The current direction is to build a Hugging Face personality adapter and a chat lab first, then compare it fairly with prompting. The commercial target is a customer-hosted harness that organizations tune themselves. Molecular-diagnostics assay-development and bioinformatics teams are the proposed first market.
 
 - [Training build, accounts, budget, and paper](docs/training-plan.md)

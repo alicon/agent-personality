@@ -17,3 +17,5 @@ Read README.md, then the document owning the task. The current build and paper p
 AGENTS.md is a local, ignored symlink to this file.
 
 Local Hub tooling, account identity, private artifact destinations, and reproduction commands are recorded in docs/setup.md. Training remains planned. Credentials stay outside the repository.
+
+Current execution is the preparation phase in docs/preparation-phase.md: local work first, $90 working limit plus $9 billing reserve cumulatively, short single-attempt GPU jobs, and no full research campaign yet. This is a spending ceiling, not permission to fund an account or launch an unspecified job. Make the first paid run concrete and reviewable. The local cost calculator does not yet enforce provider launches.
