@@ -87,6 +87,35 @@ class BudgetTests(unittest.TestCase):
             self.assertEqual(spec["secrets"], {"HF_TOKEN": "fake-test-token"})
             self.assertEqual(result["ledger"]["unresolved_jobs"], 1)
 
+    def test_tiny_check_requires_its_own_approval_and_reserves_one_bounded_job(self):
+        with tempfile.TemporaryDirectory() as directory:
+            api = FakeApi()
+            reviewed = plan(stage="tiny-check")
+            ledger = Ledger(Path(directory) / "budget.sqlite")
+            with self.assertRaises(ValueError):
+                submit(api, ledger, reviewed, plan()["approval_sha256"], "fake-test-token")
+            self.assertFalse(api.submissions)
+            result = submit(api, ledger, reviewed, reviewed["approval_sha256"], "fake-test-token")
+            spec = api.submissions[0]
+            self.assertEqual((spec["timeout"], spec["attempts"], spec["flavor"]), (3600, 1, "l4x1"))
+            self.assertIn("personality_lab.tiny_check", spec["command"][2])
+            compile(spec["command"][2], "reviewed-bootstrap", "exec")
+            self.assertEqual(reviewed["plan"]["recipe"]["max_steps"], 2)
+            self.assertTrue(reviewed["plan"]["downloads_model_weights"])
+            self.assertEqual(result["ledger"]["reserved"], "1.80")
+            self.assertEqual(len(api.submissions), 1)
+
+    def test_unsupported_stage_and_mutated_training_recipe_never_submit(self):
+        with self.assertRaises(ValueError):
+            plan(stage="14b-training")
+        reviewed = plan(stage="tiny-check")
+        reviewed["plan"]["recipe"]["max_steps"] = 300
+        with tempfile.TemporaryDirectory() as directory:
+            api = FakeApi()
+            with self.assertRaises(ValueError):
+                submit(api, Ledger(Path(directory) / "budget.sqlite"), reviewed, reviewed["approval_sha256"], "fake-test-token")
+            self.assertFalse(api.uploads)
+
     def test_wrong_account_public_destination_active_job_price_or_approval_stops_before_upload(self):
         for attribute, bad in (("account", "someone_else"), ("private", False), ("active", True), ("price", 1)):
             with self.subTest(attribute=attribute), tempfile.TemporaryDirectory() as directory:

@@ -1,6 +1,6 @@
 # Build a personality lab, then a paper
 
-Date: October 10, 2026. Status: build and study plan; [local implementation and first run review](build-review.md) ready. [Local login and private Hub repositories](setup.md) are ready under abelcable; no GPU jobs, model training, or billing changes have been performed by the agent.
+Date: October 10, 2026. Status: build and study plan; [local implementation and first run review](build-review.md) ready. [Local login and private Hub repositories](setup.md) are ready under abelcable; the first approved GPU environment check passed. No pretrained-model training has run. The [tiny training proposal](tiny-training-review.md) is ready for review.
 
 Abel wants the enjoyment of training a real model now, with a publication and potential business asset as longer-term goals. The planning budget is $1,000–$2,000 using rented GPUs. That range is not authorization to spend.
 
@@ -43,11 +43,11 @@ The current implementation pins the image and resolves Linux dependencies before
 ## Accounts and setup Abel needs
 
 1. Completed: Abel supplied the [abelcable account](https://huggingface.co/abelcable) and authorized local browser/device login. [Setup record](setup.md).
-2. Wait to fund compute until the first smoke run is concrete and reviewable. Choose the smallest practical initial credit purchase then; account funding and actual job spending are distinct. Do not enable automatic refills.
-3. Completed: local CLI authentication and private model/dataset repository creation. Check Jobs authorization separately before the first run. Keep credentials in local login or job secrets, outside chat. [Token documentation](https://huggingface.co/docs/hub/security-tokens).
-4. Approve a concrete first run after the trainer, dataset, expected runtime, and cost cap are reviewable.
+2. Completed: Abel deposited $100 and approved one environment check, which passed. Further job spending requires a reviewed proposal. Do not enable automatic refills.
+3. Completed: local CLI authentication and private model/dataset repository creation. The completed environment run verified Jobs authorization and scheduling. Keep credentials in local login or job secrets, outside chat. [Token documentation](https://huggingface.co/docs/hub/security-tokens).
+4. Review the next tiny training proposal after the trainer, dataset, runtime limits and cost cap are reviewable.
 
-GitHub is already available. No second GPU-cloud account is required for the recommended path. Hugging Face PRO is optional: current Jobs documentation allows any account with a positive compute-credit balance. Jobs eligibility and GPU availability still need an authenticated check for the new account. [Jobs pricing and billing](https://huggingface.co/docs/hub/jobs-pricing).
+GitHub is already available. No second GPU-cloud account is required for the recommended path. Hugging Face PRO is optional: current Jobs documentation allows any account with a positive compute-credit balance. The environment run established eligibility and one successful allocation; availability remains checked before each launch. [Jobs pricing and billing](https://huggingface.co/docs/hub/jobs-pricing).
 
 I can prepare the code, dataset tools, recipes, and interface before account setup finishes. Account creation, payment details, and granting account access belong to Abel.
 
@@ -142,4 +142,4 @@ Abel owns the scientific claims, reviews sources and results, and makes the publ
 
 Keep the repository private during development. Decide the public research release separately from the commercial package and any customer-specific assets. A generic dataset and adapter may be releasable; customer documents, examples, memories, and adapters remain customer-controlled.
 
-**Next decision:** None; prepare the next tiny-model training check for separate review after the successful environment stage.
+**Next decision:** Abel reviews the [tiny training check](tiny-training-review.md). Its launch remains separate from preparation and requires resolved prior billing.

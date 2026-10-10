@@ -15,6 +15,7 @@ The current milestone is [preparation below $100](docs/preparation-phase.md): bu
 The current direction is to build a Hugging Face personality adapter and a chat lab first, then compare it fairly with prompting. The commercial target is a customer-hosted harness that organizations tune themselves. Molecular-diagnostics assay-development and bioinformatics teams are the proposed first market.
 
 - [Try the lab and review the completed environment check](docs/build-review.md)
+- [Review the next tiny training check: $1.80 maximum reservation](docs/tiny-training-review.md)
 - [Capture personality through choices](docs/personality-calibration.md)
 - [Prototype and study cost feasibility](docs/cost-feasibility.md)
 - [Training build, accounts, budget, and paper](docs/training-plan.md)
@@ -34,7 +35,7 @@ Build and play with a learned adapter first, following the [accepted sequencing 
 
 | Order | Ticket | Depends on |
 | --- | --- | --- |
-| P0 | [Prepare the Hugging Face trainer and bounded cloud run](https://github.com/alicon/agent-personality/issues/8) | Completed; first environment check passed |
+| P0 | [Prepare the Hugging Face trainer and bounded cloud run](https://github.com/alicon/agent-personality/issues/8) | Environment check passed; cost reconciliation pending |
 | P0 | [Curate training examples and reserve unseen scenarios](https://github.com/alicon/agent-personality/issues/9) | Invented examples can start |
 | P0 | [Train the first adapter](https://github.com/alicon/agent-personality/issues/5) | #8, #9 |
 | P0 | [Build the adapter-switching chat lab](https://github.com/alicon/agent-personality/issues/10) | Interface can start; trained checkpoint from #5 |

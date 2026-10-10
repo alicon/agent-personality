@@ -44,7 +44,7 @@ Current published rates are L4 $0.80/hour and A100 80 GB $2.50/hour. The propose
 6. Save logs with non-sensitive diagnostics and record run IDs, status, duration, artifacts, and costs. A terminal disconnect or closing a log view does not cancel a job. Confirm terminal job status and reconcile billing after each run.
 7. Stop before a launch would exceed the $90 working limit. The $9 reserve is not another debugging allowance. A full corpus, long-context study, repeated training seeds, or larger research campaign requires a new decision after the preparation results are reviewable.
 
-The local environment launcher now implements source-bound approval, account/destination checks, one-attempt provider timeouts, and atomic cumulative reservations. Tests simulate provider submission and billing failures; the first live environment check passed; billing is observed but reconciliation remains pending. Unknown submission outcomes retain their reservation. The calculator remains a separate estimate. The launcher supports only the first environment stage, and cannot enforce an account-wide cap or prevent manually started jobs. See the [review package](build-review.md) for evidence and the $1.40 maximum-reservation proposal.
+The local environment launcher now implements source-bound approval, account/destination checks, one-attempt provider timeouts, and atomic cumulative reservations. Tests simulate provider submission and billing failures; the first live environment check passed; billing is observed but reconciliation remains pending. Unknown submission outcomes retain their reservation. The calculator remains a separate estimate. The launcher supports the environment stage and the separately reviewed [tiny training check](tiny-training-review.md), and cannot enforce an account-wide cap or prevent manually started jobs. See the [review package](build-review.md) for evidence and the $1.40 maximum-reservation proposal.
 
 ## What success buys us
 
@@ -52,4 +52,4 @@ The preparation phase should produce a working end-to-end development adapter an
 
 Before a full run, review the development responses and verify that every required check passed. Spending the remaining preparation allowance is not itself a goal.
 
-**Next decision:** None; prepare a tiny-model training proposal locally. Its launch needs separate approval and a resolved prior reservation.
+**Next decision:** Abel reviews the [prepared tiny training proposal](tiny-training-review.md). Its launch needs separate approval and a resolved prior reservation.

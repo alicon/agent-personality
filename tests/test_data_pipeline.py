@@ -47,7 +47,7 @@ class DataTests(unittest.TestCase):
         self.check_bad(lambda rows: rows[0].update(origin="customer_transcript"))
 
     def test_recipes_are_bounded_and_pinned(self):
-        for name in ("tiny-smoke", "14b-smoke"):
+        for name in ("tiny-smoke", "tiny-check", "14b-smoke"):
             recipe = Recipe.load(ROOT / f"configs/{name}.json")
             self.assertLessEqual(recipe.max_steps, 30)
         recipe = json.loads((ROOT / "configs/14b-smoke.json").read_text())

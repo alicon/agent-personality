@@ -82,14 +82,48 @@ def persist_folder(output, run_id, repo):
     return commit.oid
 
 
-def fit(model, train_rows, validation_rows, tokenizer, recipe, output, *, cpu=False, resume=None, upload=None):
+def validate_resume(checkpoint, manifest):
+    """Check the old provenance before any output manifest can overwrite it."""
+    checkpoint = Path(checkpoint)
+    prior = json.loads((checkpoint.parent / "manifest.json").read_text())
+    state = json.loads((checkpoint / "trainer_state.json").read_text())
+    keys = ("model_id", "model_revision", "lora_rank", "seed", "quantization", "max_length",
+            "gradient_accumulation_steps", "learning_rate")
+    if type(state["global_step"]) is not int or not 0 < state["global_step"] < manifest["recipe"]["max_steps"]:
+        raise ValueError("Checkpoint must precede the requested step limit")
+    if (prior["data_sha256"] != manifest["data_sha256"]
+            or prior["chat_template_sha256"] != manifest["chat_template_sha256"]
+            or prior.get("source") != manifest.get("source")
+            or any(prior["recipe"][k] != manifest["recipe"][k] for k in keys)):
+        raise ValueError("Resume checkpoint provenance mismatch")
+    for name in ("optimizer.pt", "scheduler.pt", "rng_state.pth", "adapter_model.safetensors"):
+        if not (checkpoint / name).is_file():
+            raise ValueError("Complete optimizer, scheduler, RNG and adapter checkpoint required")
+    return state["global_step"]
+
+
+def frozen_parameter_digest(model):
+    """Byte-level parameter check for small smoke models; not a full-state hash."""
+    import torch
+    result = hashlib.sha256()
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            result.update(name.encode())
+            result.update(str((tuple(parameter.shape), parameter.dtype)).encode())
+            result.update(parameter.detach().cpu().contiguous().reshape(-1).view(torch.uint8).numpy().tobytes())
+    return result.hexdigest()
+
+
+def fit(model, train_rows, validation_rows, tokenizer, recipe, output, *, cpu=False, resume=None,
+        upload=None, stop_after_step=None):
     import torch
     from transformers import Trainer, TrainerCallback, TrainingArguments
     started, stop = time.monotonic(), {"requested": False}
 
     class Checks(TrainerCallback):
         def on_step_end(self, args, state, control, **kwargs):
-            if stop["requested"] or time.monotonic() - started >= recipe.soft_timeout_seconds:
+            if (stop["requested"] or time.monotonic() - started >= recipe.soft_timeout_seconds
+                    or (stop_after_step is not None and state.global_step >= stop_after_step)):
                 control.should_training_stop = True
                 control.should_save = True
             return control
@@ -109,7 +143,8 @@ def fit(model, train_rows, validation_rows, tokenizer, recipe, output, *, cpu=Fa
         save_total_limit=2, eval_strategy="no", report_to=[], seed=recipe.seed, data_seed=recipe.seed,
         bf16=not cpu, use_cpu=cpu, gradient_checkpointing=not cpu,
         gradient_checkpointing_kwargs={"use_reentrant": False}, optim="adamw_torch",
-        remove_unused_columns=False, dataloader_pin_memory=not cpu, disable_tqdm=True)
+        remove_unused_columns=False, dataloader_pin_memory=not cpu, disable_tqdm=True,
+        logging_nan_inf_filter=False)
     trainer = Trainer(model=model, args=arguments, train_dataset=train_rows, eval_dataset=validation_rows,
                       data_collator=partial(collate, pad_token_id=tokenizer.pad_token_id), callbacks=[Checks()])
     old_handlers = {}
@@ -126,6 +161,8 @@ def fit(model, train_rows, validation_rows, tokenizer, recipe, output, *, cpu=Fa
         if not math.isfinite(evaluation["eval_loss"]):
             raise RuntimeError("Nonfinite validation loss")
         metrics = {"training": train_result.metrics, "validation": evaluation, "steps": trainer.state.global_step,
+                   "optimizer_step_values": sorted({int(state["step"]) for state in trainer.optimizer.state.values()
+                                                     if "step" in state}),
                    "elapsed_seconds": time.monotonic() - started, "stopped_early": trainer.state.global_step < recipe.max_steps,
                    "peak_vram_bytes": torch.cuda.max_memory_allocated() if not cpu else 0}
         (output / "metrics.json").write_text(json.dumps(metrics, indent=2))
@@ -141,10 +178,16 @@ def main():
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--persist-repo")
     parser.add_argument("--resume")
+    parser.add_argument("--stop-after-step", type=int)
+    parser.add_argument("--verify-frozen-base", action="store_true")
     args = parser.parse_args()
     if not re.fullmatch(r"[a-zA-Z0-9_-]{1,80}", args.run_id):
         parser.error("Simple run ID required")
     recipe = Recipe.load(args.recipe)
+    if args.stop_after_step is not None and not 0 < args.stop_after_step < recipe.max_steps:
+        parser.error("Stop step must precede the recipe's final step")
+    if args.verify_frozen_base and recipe.model_id != "Qwen/Qwen3-0.6B":
+        parser.error("Full frozen-parameter hashing is restricted to the tiny model")
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, set_seed
     from peft import prepare_model_for_kbit_training, PeftModel
@@ -165,15 +208,10 @@ def main():
                 "source": {"bundle_sha256": os.environ.get("PERSONALITY_SOURCE_SHA256"),
                            "git_commit": os.environ.get("PERSONALITY_SOURCE_COMMIT"),
                            "trainer_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}}
-    (output / "manifest.json").write_text(json.dumps(manifest, indent=2))
     if args.resume:
-        prior = json.loads((Path(args.resume).parent / "manifest.json").read_text())
-        keys = ("model_id", "model_revision", "lora_rank", "seed", "quantization", "max_length", "gradient_accumulation_steps", "learning_rate")
-        checkpoint_state = json.loads((Path(args.resume) / "trainer_state.json").read_text())
-        if checkpoint_state["global_step"] >= recipe.max_steps:
-            raise ValueError("Checkpoint has already reached the requested step limit")
-        if prior["data_sha256"] != manifest["data_sha256"] or any(prior["recipe"][k] != manifest["recipe"][k] for k in keys):
-            raise ValueError("Resume checkpoint provenance mismatch")
+        manifest["resume_start_step"] = validate_resume(args.resume, manifest)
+        manifest["resumed_from"] = str(args.resume)
+    (output / "manifest.json").write_text(json.dumps(manifest, indent=2))
     quant = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.bfloat16,
                               bnb_4bit_use_double_quant=True)
     model = AutoModelForCausalLM.from_pretrained(recipe.model_id, revision=recipe.model_revision,
@@ -181,13 +219,19 @@ def main():
     model.config.use_cache = False
     model = add_adapter(prepare_model_for_kbit_training(model), recipe.lora_rank)
     before = {name: value.detach().cpu().clone() for name, value in model.named_parameters() if value.requires_grad}
+    frozen_before = frozen_parameter_digest(model) if args.verify_frozen_base else None
     manifest["trainable_parameters"] = sum(p.numel() for p in model.parameters() if p.requires_grad)
     try:
         metrics = fit(model, [r for s, r in encoded if s == "train"], [r for s, r in encoded if s == "validation"],
                       tokenizer, recipe, output, resume=args.resume,
-                      upload=lambda: persist_folder(output, args.run_id, args.persist_repo))
+                      upload=lambda: persist_folder(output, args.run_id, args.persist_repo),
+                      stop_after_step=args.stop_after_step)
         if not any(not torch.equal(before[n], p.detach().cpu()) for n, p in model.named_parameters() if n in before):
             raise RuntimeError("Adapter weights did not change")
+        if frozen_before is not None:
+            if frozen_before != frozen_parameter_digest(model):
+                raise RuntimeError("Frozen base parameters changed")
+            manifest["frozen_parameters_unchanged"] = True
         # Reload against the identical frozen base without allocating a second 14B model.
         sample = collate([encoded[0][1]], tokenizer.pad_token_id)
         sample = {k: v.to(model.device) for k, v in sample.items()}
@@ -198,6 +242,7 @@ def main():
                 base_logits = model(**sample).logits.detach().cpu()
         if torch.allclose(trained_logits, base_logits):
             raise RuntimeError("Adapter-on/off produces no detectable difference")
+        manifest["adapter_on_off_max_abs_delta"] = float((trained_logits - base_logits).abs().max())
         base = model.unload()
         del base.peft_config
         restored = PeftModel.from_pretrained(base, output / "adapter")
@@ -206,6 +251,7 @@ def main():
             reloaded_logits = restored(**sample).logits.detach().cpu()
         if not torch.allclose(trained_logits, reloaded_logits, atol=.02, rtol=.02):
             raise RuntimeError("Saved adapter reload mismatch")
+        manifest["reload_max_abs_delta"] = float((trained_logits - reloaded_logits).abs().max())
         manifest.update(status="completed" if not metrics["stopped_early"] else "stopped_early",
                         adapter_changed=True, reload_checked=True, behavior_evaluated=False)
     except BaseException:

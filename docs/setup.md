@@ -41,6 +41,8 @@ The tokenizer check downloads public tokenizer files, not model weights or paid 
 
 Development data can be reproduced with python3 scripts/build_development_data.py. This writes fifty invented fixtures with explicit unreviewed status. Calibration choices and chat traces stay in ignored artifacts/. Never commit tokens or private work transcripts.
 
+The next reviewed proposal is the [two-step tiny training/resume check](tiny-training-review.md). Prepare it with `--stage tiny-check --plan artifacts/tiny-training-plan.json`; preparation starts no job.
+
 The GPU training entry point is personality_lab.training with --recipe configs/tiny-smoke.json or configs/14b-smoke.json, a unique --run-id, and optional --persist-repo. It refuses a CUDA-free fallback. Recipes are limited smoke configurations, not full campaign recipes. Standard Transformers Trainer is used with explicitly verified assistant masks; TRL/preference optimization is deferred.
 
 ## Reviewed cloud execution only
@@ -70,4 +72,4 @@ If a submission response was lost, retain maximum liability until the job or con
 
 The first environment job established successful GPU scheduling and artifact persistence. Billing currently reports $0.03 but the credit balance disagrees; retain its $1.40 reservation until settled. Training capacity remains untested.
 
-**Next decision:** None; prepare the next bounded training check for review. No additional launch is approved.
+**Next decision:** Abel reviews the [tiny training check](tiny-training-review.md). No additional launch is approved, and the earlier billing reservation remains held.
