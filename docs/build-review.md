@@ -1,6 +1,6 @@
 # Review before the first paid run
 
-October 10, 2026. New paid spend: **$0**. No Hugging Face GPU job, inference endpoint, or paid Space has been started. This package is ready for local review and a first environment smoke, not for a claim that learned personality works.
+October 10, 2026. The first approved GPU environment check passed. Jobs billing reports **$0.03**; the **$1.40 reservation remains held** pending settled billing. [Run record](runs/2026-10-10-environment.md). This package does not establish learned personality.
 
 ## What you can try now
 
@@ -24,7 +24,7 @@ The correction timer measures wall time between marking a reply and the follow-u
 - Local Gradio requests exercised session creation, paired replies, correction recording, and follow-up. Session records survive restart; interrupted timing remains missing rather than being reconstructed.
 - Atomic spending reservations prevent concurrent launches through the local launcher. A lost submission response retains the maximum liability and blocks another launch. Wrong account, public artifact destination, an active provider job, changed source/specification, higher live rate, and excess budget fail before submission. Provider submission is mocked in tests.
 
-Verification: 35 tests pass in the lab environment, including the four ML/tokenizer tests. The required system-Python suite also passes, with those four optional tests skipped. Dependency checks and Python static checks pass. No pretrained-model behavior evaluations have run. CUDA/NF4 execution, provider scheduling, real remote persistence, and the actual 14B memory/throughput path are still untested.
+Verification: 35 tests pass in the lab environment, including the four ML/tokenizer tests. The required system-Python suite also passes, with those four optional tests skipped. Dependency checks and Python static checks pass. No pretrained-model behavior evaluations have run. The first remote check now verifies CUDA/NF4 execution, provider scheduling and private report persistence. GPU model training and the actual 14B memory/throughput path remain untested.
 
 ## First paid proposal
 
@@ -43,7 +43,7 @@ The first job checks the GPU environment and artifact persistence. It **does not
 | Container | pytorch/pytorch@sha256:417bd75df6365104c283ea4c1651fb3530d9eb5a4c2fafa51943cff2a94e6385 |
 | Software | Linux/Python 3.11 dependency resolution in requirements-gpu-resolved.txt; installed versions recorded at runtime |
 
-The public registry confirms the image's amd64 digest. The Linux lock is resolved rather than runtime-tested; the first job will establish compatibility. Image setup and package installation use part of the provider timeout. Package installation has its own 15-minute deadline, followed by at most ten minutes for the environment script. The provider's 30-minute timeout covers the whole job.
+The public registry confirms the image's amd64 digest. The Linux lock ran successfully in the first environment check. Image setup and package installation use part of the provider timeout. Package installation has its own 15-minute deadline, followed by at most ten minutes for the environment script. The provider's 30-minute timeout covers the whole job.
 
 The launcher uploads only the enumerated repository source, configs, invented data, requirements, and tests as a deterministic bundle. It checks the exact bundle digest before extraction. The Hub token goes through provider secrets, not command arguments or saved manifests. Private-repository writes and a local retrieval of the uploaded result must succeed to establish persistence. A timeout before upload is a failed stage, not evidence that artifacts survived.
 
@@ -53,6 +53,6 @@ Prepare the exact source-bound proposal after reviewing the code:
 
 This writes ignored artifacts/first-run.json and initializes the local ledger without submitting. The eventual submit command requires that proposal's approval digest; the agent will use it only after Abel approves spending. The launcher currently supports this environment stage only. Tiny-model and 14B runs need their own reviewed proposals after the environment result.
 
-A local ledger cannot enforce an account-wide spending cap or prevent manually launched jobs. Confirm final provider status and invoice cost before reconciling the reservation. Use the status/cancel commands in [setup](setup.md); disconnecting a terminal does not cancel a job. No billing balance or scheduling capacity has been established. Fund the smallest practical credit purchase after review; depositing $100 would not authorize spending all of it.
+A local ledger cannot enforce an account-wide spending cap or prevent manually launched jobs. Confirm final provider status and invoice cost before reconciling the reservation. Use the status/cancel commands in [setup](setup.md); disconnecting a terminal does not cancel a job. Abel deposited $100 and approved this single check. Scheduling succeeded; the billing discrepancy and retained reservation are documented in the run record. The deposit does not authorize further jobs.
 
-**Next decision:** Abel reviews the local lab and this $1.40 maximum-reservation proposal, then decides whether to fund Hugging Face and approve this one environment job.
+**Next decision:** None; prepare a separate tiny-model training proposal locally, and settle the first reservation before another launch.

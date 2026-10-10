@@ -97,7 +97,7 @@ Suggested allocation for a $1,500 campaign:
 
 These are envelopes, not service quotes or a promise of publication-quality results at that cost. Runtime depends on tokens, hardware throughput, and experiment scope. Use the $1,000 end for one primary model and a narrower study; use up to $2,000 for replication and extra human validation. Do not run an always-on GPU endpoint by default.
 
-For the current preparation phase, use the [staged budget and stop rules](preparation-phase.md). Target $20–$40 cumulatively, enforce the $90 working limit with a $9 reserve, and limit any proposed individual GPU job to two hours and $5 of GPU charges. A provider timeout limits one job, not the whole campaign; record and reconcile cumulative costs. The local launcher now reserves cumulative liability atomically and requires the reviewed source/specification digest. Its provider interactions are tested with mocks; the first live environment run remains pending review.
+For the current preparation phase, use the [staged budget and stop rules](preparation-phase.md). Target $20–$40 cumulatively, enforce the $90 working limit with a $9 reserve, and limit any proposed individual GPU job to two hours and $5 of GPU charges. A provider timeout limits one job, not the whole campaign; record and reconcile cumulative costs. The local launcher now reserves cumulative liability atomically and requires the reviewed source/specification digest. Its provider interactions are tested with mocks; the first approved live environment check passed. GPU model training remains untested; see the [run record](runs/2026-10-10-environment.md).
 
 A [cost feasibility note](cost-feasibility.md) separates a useful prototype from a convincing comparative study. [Personality calibration](personality-calibration.md) captures Abel’s preferences before expanding the corpus.
 
@@ -142,4 +142,4 @@ Abel owns the scientific claims, reviews sources and results, and makes the publ
 
 Keep the repository private during development. Decide the public research release separately from the commercial package and any customer-specific assets. A generic dataset and adapter may be releasable; customer documents, examples, memories, and adapters remain customer-controlled.
 
-**Next decision:** Abel reviews the [local implementation and first bounded GPU proposal](build-review.md), then decides whether to fund and approve that environment job.
+**Next decision:** None; prepare the next tiny-model training check for separate review after the successful environment stage.

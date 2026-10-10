@@ -1,0 +1,26 @@
+{
+  "status": "completed",
+  "environment": {
+    "python": "3.11.13",
+    "platform": "Linux",
+    "packages": {
+      "torch": "2.8.0+cu128",
+      "transformers": "4.57.1",
+      "peft": "0.17.1",
+      "accelerate": "1.10.1",
+      "bitsandbytes": "0.47.0",
+      "huggingface_hub": "0.36.0",
+      "tokenizers": "0.22.2",
+      "safetensors": "0.8.0"
+    }
+  },
+  "model_training": false,
+  "behavior_evaluation": false,
+  "run_id": "env-1664e546f5eb",
+  "source_bundle_sha256": "147c3d0ea394b17be0c25edfc684d405dd26e92bade974356374d9b1541a87e9",
+  "source_git_commit": "dfc50c71fbba8ecb9a39c6c64a13b9a252e7a782",
+  "gpu": "NVIDIA L4",
+  "tokenizer_episodes": 50,
+  "max_tokens": 200,
+  "elapsed_seconds": 1.358953831004328
+}

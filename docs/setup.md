@@ -1,6 +1,6 @@
 # Hugging Face setup
 
-Checked October 10, 2026. Local harness is implemented; GPU execution and pretrained-model evaluation remain untested.
+Checked October 10, 2026. Local harness is implemented; the first GPU environment check passed. GPU model training and pretrained-model behavior evaluation remain untested.
 
 ## Current resources
 
@@ -8,7 +8,7 @@ Checked October 10, 2026. Local harness is implemented; GPU execution and pretra
 - Private model repository: [agent-personality-qwen3-14b](https://huggingface.co/abelcable/agent-personality-qwen3-14b).
 - Private dataset repository: [agent-personality-dialogues](https://huggingface.co/datasets/abelcable/agent-personality-dialogues).
 
-Authentication was verified against the expected account. Both repositories were created through the Hub API and their private visibility was checked. They contain no uploaded training corpus or learned checkpoint yet. No GPU job, endpoint, or paid Space was started.
+Authentication was verified against the expected account. Both repositories were created through the Hub API and their private visibility was checked. They contain no uploaded training corpus or learned checkpoint yet. One approved environment job completed; the model repository now contains its source bundle and report. No endpoint or paid Space was started.
 
 The local CLI is huggingface_hub 2.2.0, installed in this project's ignored .venv using Python 3.13.2. The [bootstrap requirements](../requirements-bootstrap.txt) pin the installed packages. This is Hub tooling, not the future Linux/CUDA training environment.
 
@@ -45,7 +45,7 @@ The GPU training entry point is personality_lab.training with --recipe configs/t
 
 ## Reviewed cloud execution only
 
-The [first proposal](build-review.md) is a thirty-minute environment check, with at most $0.40 in GPU time and $1.00 ancillary reservation. Funding and spending remain pending Abel's review. The larger research range remains a planning budget.
+The [first proposal](build-review.md) is a thirty-minute environment check, with at most $0.40 in GPU time and $1.00 ancillary reservation. Abel funded $100 and approved that one check; it completed successfully. [Result and billing status](runs/2026-10-10-environment.md). Further jobs require separate review. The larger research range remains a planning budget.
 
 Prepare without submission:
 
@@ -68,6 +68,6 @@ Confirm a terminal status, retrieve the private environment.json artifact, and i
 
 If a submission response was lost, retain maximum liability until the job or confirmed non-submission is established. The CONFIRMED_NOT_SUBMITTED reconciliation status is for that established case, never an assumption from a network error. The provider timeout remains active if the terminal disconnects. Closing Gradio or a log view does not cancel a cloud job.
 
-Billing balance and successful GPU scheduling have not been established by repository creation. Account setup does not establish training eligibility or capacity.
+The first environment job established successful GPU scheduling and artifact persistence. Billing currently reports $0.03 but the credit balance disagrees; retain its $1.40 reservation until settled. Training capacity remains untested.
 
-**Next decision:** Abel reviews the local build and decides whether to fund and approve the first environment job. The launcher will not submit without that decision.
+**Next decision:** None; prepare the next bounded training check for review. No additional launch is approved.

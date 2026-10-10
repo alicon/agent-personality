@@ -10,11 +10,11 @@ This repository contains a research review, a training and paper plan, a commerc
 
 Hugging Face local login and two private artifact repositories are ready under abelcable. The trainer, invented-data pipeline, local Gradio lab, and spending launcher are implemented and tested locally. CUDA training and learned behavior remain untested. See the [build review and first paid proposal](docs/build-review.md).
 
-The current milestone is [preparation below $100](docs/preparation-phase.md): build locally first, then run short GPU smoke tests. Atomic local spending reservations and an approval-bound environment launcher are available. No paid job has been submitted.
+The current milestone is [preparation below $100](docs/preparation-phase.md): build locally first, then run short GPU smoke tests. Atomic local spending reservations and an approval-bound environment launcher are available. The first paid environment check passed; Jobs billing reports $0.03, with the $1.40 reservation retained pending settled billing. [Result and limits](docs/runs/2026-10-10-environment.md).
 
 The current direction is to build a Hugging Face personality adapter and a chat lab first, then compare it fairly with prompting. The commercial target is a customer-hosted harness that organizations tune themselves. Molecular-diagnostics assay-development and bioinformatics teams are the proposed first market.
 
-- [Try the lab and review the first $1.40 reservation](docs/build-review.md)
+- [Try the lab and review the completed environment check](docs/build-review.md)
 - [Capture personality through choices](docs/personality-calibration.md)
 - [Prototype and study cost feasibility](docs/cost-feasibility.md)
 - [Training build, accounts, budget, and paper](docs/training-plan.md)
@@ -34,7 +34,7 @@ Build and play with a learned adapter first, following the [accepted sequencing 
 
 | Order | Ticket | Depends on |
 | --- | --- | --- |
-| P0 | [Prepare the Hugging Face trainer and bounded cloud run](https://github.com/alicon/agent-personality/issues/8) | Code can start; paid run needs account and bounded approval |
+| P0 | [Prepare the Hugging Face trainer and bounded cloud run](https://github.com/alicon/agent-personality/issues/8) | Completed; first environment check passed |
 | P0 | [Curate training examples and reserve unseen scenarios](https://github.com/alicon/agent-personality/issues/9) | Invented examples can start |
 | P0 | [Train the first adapter](https://github.com/alicon/agent-personality/issues/5) | #8, #9 |
 | P0 | [Build the adapter-switching chat lab](https://github.com/alicon/agent-personality/issues/10) | Interface can start; trained checkpoint from #5 |
