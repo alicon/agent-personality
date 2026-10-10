@@ -1,0 +1,7 @@
+AGENTS.md
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+artifacts/
+request-traces/
