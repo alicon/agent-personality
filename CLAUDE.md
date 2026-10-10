@@ -1,6 +1,6 @@
 # Agent map
 
-Read README.md, then the document owning the task. The current build and paper plan is docs/training-plan.md; commercial direction is docs/product-north-star.md; market evidence and the proposed molecular-diagnostics focus are in docs/market-landscape.md; accepted sequencing is docs/decisions/0001-training-first.md. Research lives in docs/research.md; dated observations in docs/local-observations.md; the historical drift diagnostic design is docs/experiment.md; candidate architecture is docs/architecture.md.
+Read README.md, then the document owning the task. Cross-machine recovery and the current handoff are in docs/restart.md. The current build and paper plan is docs/training-plan.md; commercial direction is docs/product-north-star.md; market evidence and the proposed molecular-diagnostics focus are in docs/market-landscape.md; accepted sequencing is docs/decisions/0001-training-first.md. Research lives in docs/research.md; dated observations in docs/local-observations.md; the historical drift diagnostic design is docs/experiment.md; candidate architecture is docs/architecture.md.
 
 - Follow Abel's current request and the shared human-communication skill. Keep the shared voice pointer central rather than copying its rules into this repository.
 - Keep demonstrated findings, local observations, hypotheses, proposed designs, and executed experiments distinct.
@@ -16,6 +16,6 @@ Read README.md, then the document owning the task. The current build and paper p
 
 AGENTS.md is a local, ignored symlink to this file.
 
-Local Hub tooling, account identity, private artifact destinations, and reproduction commands are recorded in docs/setup.md. Training remains planned. Credentials stay outside the repository.
+Local Hub tooling, account identity, private artifact destinations, and reproduction commands are recorded in docs/setup.md. Tiny GPU recovery and the 14B short-example training/reload path passed; sixteen saved replies are available locally. Formal personality effectiveness remains untested. Credentials stay outside the repository.
 
-Current execution is the preparation phase in docs/preparation-phase.md: local work first, $90 working limit plus $9 billing reserve cumulatively, short single-attempt GPU jobs, and no full research campaign yet. This is a spending ceiling, not permission to fund an account or launch an unspecified job. Make the first paid run concrete and reviewable. The local cost calculator does not yet enforce provider launches.
+Current execution is the preparation phase in docs/preparation-phase.md: local work first, $90 working limit plus $9 billing reserve cumulatively, short single-attempt GPU jobs, and no full research campaign yet. Abel approved the initial checks and subsequently authorized continued bounded preparation under $100. The launcher checks account, destination, actual rate and source-bound plans, and reserves cumulative liability locally. Preserve the ledger across machines; a fresh empty ledger does not reset the allowance. Use one submitting machine at a time. The larger research campaign is not authorized by this preparation cap.

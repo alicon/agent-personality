@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "recorded_at_utc": "2026-10-10T17:59:45.494063+00:00",
+  "purpose": "Non-secret handoff snapshot; not a shared cross-machine lock or automatic billing feed",
+  "account": "abelcable",
+  "project": "agent-personality",
+  "reported_spent_usd": "0.46",
+  "working_limit_usd": "90.00",
+  "billing_reserve_usd": "9.00",
+  "human_preparation_cap_usd": "100.00",
+  "active_jobs_at_snapshot": 0,
+  "rows": [
+    {
+      "reservation": "env-1664e546f5eb",
+      "plan_sha": "9d46207bf0790423930f33b58544fadbb366f7fd08c2150745d16e986c67dc6c",
+      "maximum": "1.40",
+      "state": "reconciled",
+      "job_id": "6aca6acbfee2c9007018a183",
+      "actual": "0.03",
+      "terminal_status": "COMPLETED"
+    },
+    {
+      "reservation": "tiny-3a1d2b1ec4b7",
+      "plan_sha": "757866addc6a757956c005a36a44e73e5b435d13561ea5f08802e0a7bfa6d539",
+      "maximum": "1.80",
+      "state": "reconciled",
+      "job_id": "6aca728a095c578089314c80",
+      "actual": "0.02",
+      "terminal_status": "ERROR"
+    },
+    {
+      "reservation": "tiny-c4d4b38ee01e",
+      "plan_sha": "108ed74e7efe53239c2d52a614f916ec5f1279c446234cdea1ca5a90338e2ac5",
+      "maximum": "1.80",
+      "state": "reconciled",
+      "job_id": "6aca74bc095c578089314eb0",
+      "actual": "0.03",
+      "terminal_status": "COMPLETED"
+    },
+    {
+      "reservation": "q14-60fc11a776c4",
+      "plan_sha": "6c2158b121cf293ce794e42b42fcc137a44c6f95f6cc88b0d7e65cfc3bb6e148",
+      "maximum": "4.77",
+      "state": "reconciled",
+      "job_id": "6aca7693fee2c9007018ab40",
+      "actual": "0.38",
+      "terminal_status": "COMPLETED"
+    }
+  ]
+}

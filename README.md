@@ -16,6 +16,7 @@ The current direction is to build a Hugging Face personality adapter and a chat 
 
 - [Try the lab and review the completed environment check](docs/build-review.md)
 - [Try sixteen real 14B replies and inspect the adapter result](docs/runs/2026-10-10-14b-smoke.md)
+- [Continue from another machine](docs/restart.md)
 - [Capture personality through choices](docs/personality-calibration.md)
 - [Prototype and study cost feasibility](docs/cost-feasibility.md)
 - [Training build, accounts, budget, and paper](docs/training-plan.md)
