@@ -191,6 +191,7 @@ def main():
     parser.add_argument("--resume")
     parser.add_argument("--stop-after-step", type=int)
     parser.add_argument("--verify-frozen-base", action="store_true")
+    parser.add_argument("--demo", action="store_true")
     args = parser.parse_args()
     if not re.fullmatch(r"[a-zA-Z0-9_-]{1,80}", args.run_id):
         parser.error("Simple run ID required")
@@ -268,6 +269,11 @@ def main():
             raise RuntimeError("Saved adapter reload mismatch")
         manifest.update(status="completed" if not metrics["stopped_early"] else "stopped_early",
                         adapter_changed=True, reload_checked=True, behavior_evaluated=False)
+        if args.demo:
+            from personality_lab.demo import generate_demo
+            manifest["demo_status"] = "started"
+            manifest["demo"] = generate_demo(restored, tokenizer, recipe, output, manifest)
+            manifest["demo_status"] = "completed"
     except BaseException:
         manifest["status"] = "failed"
         raise

@@ -1,0 +1,212 @@
+{
+  "report": {
+    "status": "completed",
+    "run_id": "tiny-c4d4b38ee01e",
+    "model_training": true,
+    "behavior_evaluation": false,
+    "data_review": "agent-authored unreviewed software fixtures; not calibrated to Abel",
+    "environment": {
+      "python": "3.11.13",
+      "platform": "Linux",
+      "packages": {
+        "torch": "2.8.0+cu128",
+        "transformers": "4.57.1",
+        "peft": "0.17.1",
+        "accelerate": "1.10.1",
+        "bitsandbytes": "0.47.0",
+        "huggingface_hub": "0.36.0",
+        "tokenizers": "0.22.2",
+        "safetensors": "0.8.0"
+      }
+    },
+    "source_bundle_sha256": "8ec0ffe335e788b11fdea9505696c40958dbe43479989fb29bfd2b5a7a419b3c",
+    "source_git_commit": "c8acfcf12e9c0ca3e53efa14fd82fcb373e2f5c8",
+    "first": {
+      "status": "stopped_early",
+      "recipe": {
+        "model_id": "Qwen/Qwen3-0.6B",
+        "model_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+        "data": "data/development.jsonl",
+        "max_length": 1024,
+        "max_steps": 2,
+        "gradient_accumulation_steps": 1,
+        "learning_rate": 0.0001,
+        "lora_rank": 8,
+        "seed": 41,
+        "soft_timeout_seconds": 300,
+        "output": "artifacts/tiny-check",
+        "quantization": "nf4"
+      },
+      "data_sha256": "a67e26e08730760c189a5de31ffd44fb8cc0af644c01ba00535ada4e253283ed",
+      "chat_template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+      "environment": {
+        "python": "3.11.13",
+        "platform": "Linux",
+        "packages": {
+          "torch": "2.8.0+cu128",
+          "transformers": "4.57.1",
+          "peft": "0.17.1",
+          "accelerate": "1.10.1",
+          "bitsandbytes": "0.47.0",
+          "huggingface_hub": "0.36.0",
+          "tokenizers": "0.22.2",
+          "safetensors": "0.8.0"
+        }
+      },
+      "boundary": "local Transformers inputs, not a frontier API",
+      "data_review": "agent-authored development fixtures; not calibrated to Abel",
+      "run_id": "tiny-c4d4b38ee01e-first",
+      "source": {
+        "bundle_sha256": "8ec0ffe335e788b11fdea9505696c40958dbe43479989fb29bfd2b5a7a419b3c",
+        "git_commit": "c8acfcf12e9c0ca3e53efa14fd82fcb373e2f5c8",
+        "trainer_sha256": "cfd91593a9af73537e54f65ba4904c58012680c9e0de55a384d48f2e7e5b4078"
+      },
+      "trainable_parameters": 5046272,
+      "adapter_changed": true,
+      "frozen_parameters_unchanged": true,
+      "inference_check": {
+        "autocast": "bfloat16",
+        "comparison_dtype": "float32",
+        "training_forward_wrapper_removed": true
+      },
+      "adapter_on_off_max_abs_delta": 3.515625,
+      "reload_max_abs_delta": 0.0,
+      "reload_frozen_parameters_unchanged": true,
+      "reload_checked": true,
+      "behavior_evaluated": false
+    },
+    "resumed": {
+      "status": "completed",
+      "recipe": {
+        "model_id": "Qwen/Qwen3-0.6B",
+        "model_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+        "data": "data/development.jsonl",
+        "max_length": 1024,
+        "max_steps": 2,
+        "gradient_accumulation_steps": 1,
+        "learning_rate": 0.0001,
+        "lora_rank": 8,
+        "seed": 41,
+        "soft_timeout_seconds": 300,
+        "output": "artifacts/tiny-check",
+        "quantization": "nf4"
+      },
+      "data_sha256": "a67e26e08730760c189a5de31ffd44fb8cc0af644c01ba00535ada4e253283ed",
+      "chat_template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+      "environment": {
+        "python": "3.11.13",
+        "platform": "Linux",
+        "packages": {
+          "torch": "2.8.0+cu128",
+          "transformers": "4.57.1",
+          "peft": "0.17.1",
+          "accelerate": "1.10.1",
+          "bitsandbytes": "0.47.0",
+          "huggingface_hub": "0.36.0",
+          "tokenizers": "0.22.2",
+          "safetensors": "0.8.0"
+        }
+      },
+      "boundary": "local Transformers inputs, not a frontier API",
+      "data_review": "agent-authored development fixtures; not calibrated to Abel",
+      "run_id": "tiny-c4d4b38ee01e-resume",
+      "source": {
+        "bundle_sha256": "8ec0ffe335e788b11fdea9505696c40958dbe43479989fb29bfd2b5a7a419b3c",
+        "git_commit": "c8acfcf12e9c0ca3e53efa14fd82fcb373e2f5c8",
+        "trainer_sha256": "cfd91593a9af73537e54f65ba4904c58012680c9e0de55a384d48f2e7e5b4078"
+      },
+      "resume_start_step": 1,
+      "resumed_from": "artifacts/tiny-check/tiny-c4d4b38ee01e-first/checkpoint-1",
+      "trainable_parameters": 5046272,
+      "adapter_changed": true,
+      "frozen_parameters_unchanged": true,
+      "inference_check": {
+        "autocast": "bfloat16",
+        "comparison_dtype": "float32",
+        "training_forward_wrapper_removed": true
+      },
+      "adapter_on_off_max_abs_delta": 4.265625,
+      "reload_max_abs_delta": 0.0,
+      "reload_frozen_parameters_unchanged": true,
+      "reload_checked": true,
+      "behavior_evaluated": false
+    },
+    "first_metrics": {
+      "training": {
+        "train_runtime": 1.9125,
+        "train_samples_per_second": 1.046,
+        "train_steps_per_second": 1.046,
+        "train_loss": 2.5437309741973877,
+        "epoch": 0.025
+      },
+      "validation": {
+        "eval_loss": 4.066352367401123,
+        "eval_runtime": 1.0078,
+        "eval_samples_per_second": 9.923,
+        "eval_steps_per_second": 9.923,
+        "epoch": 0.025
+      },
+      "steps": 1,
+      "optimizer_step_values": [
+        1
+      ],
+      "elapsed_seconds": 3.335864777000097,
+      "stopped_early": true,
+      "peak_vram_bytes": 1418351616
+    },
+    "resumed_metrics": {
+      "training": {
+        "train_runtime": 2.7696,
+        "train_samples_per_second": 0.722,
+        "train_steps_per_second": 0.722,
+        "train_loss": 1.8598072528839111,
+        "epoch": 0.05
+      },
+      "validation": {
+        "eval_loss": 4.027677536010742,
+        "eval_runtime": 0.996,
+        "eval_samples_per_second": 10.04,
+        "eval_steps_per_second": 10.04,
+        "epoch": 0.05
+      },
+      "steps": 2,
+      "optimizer_step_values": [
+        2
+      ],
+      "elapsed_seconds": 4.3478733980009565,
+      "stopped_early": false,
+      "peak_vram_bytes": 1592083968
+    },
+    "adapter_changed_after_resume": true,
+    "uploaded_adapter_retrieved": true,
+    "adapter_sha256": "196a1108292278d8a2e356bc38d6c732e5d4db5773071e67d04467a9d3d5c75b",
+    "artifact_revision": "ab5f84d245690a4ca7ec0f0856373e32e91c6ef1",
+    "artifact_path": "preparation/runs/tiny-c4d4b38ee01e-resume/adapter/adapter_model.safetensors",
+    "elapsed_seconds": 36.195850937001524
+  },
+  "provider_receipt": {
+    "job_id": "6aca74bc095c578089314eb0",
+    "reservation": "tiny-c4d4b38ee01e",
+    "url": "https://huggingface.co/jobs/abelcable/6aca74bc095c578089314eb0",
+    "status": "COMPLETED",
+    "created_at": "2026-10-10 17:24:12.545000+00:00",
+    "started_at": "2026-10-10 17:24:16.027000+00:00",
+    "finished_at": "2026-10-10 17:25:15.315000+00:00",
+    "approved_max_reservation_usd": "1.80",
+    "authorization": "Abel: continue preparation under $100",
+    "approval_sha256": "108ed74e7efe53239c2d52a614f916ec5f1279c446234cdea1ca5a90338e2ac5",
+    "report_revision": "1679014cff51d9b7afc9ad44a022630b4192361b"
+  },
+  "local_adapter_recovery": {
+    "adapter_sha256": "196a1108292278d8a2e356bc38d6c732e5d4db5773071e67d04467a9d3d5c75b",
+    "after_job_termination": true,
+    "verified": true
+  },
+  "billing": {
+    "reported_jobs_subtotal_usd": "0.08",
+    "reported_increment_usd": "0.03",
+    "displayed_credit_balance_usd": "99.96",
+    "other_usage_charges_usd": "0.00",
+    "basis": "Itemized aggregate Jobs usage, not a final per-job invoice"
+  }
+}

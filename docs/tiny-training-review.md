@@ -1,6 +1,6 @@
 # Review the tiny-model training check
 
-October 10, 2026. Abel approved this one check; **submitted** as [6aca728a095c578089314c80](https://huggingface.co/jobs/abelcable/6aca728a095c578089314c80). It failed after the first optimizer step at the reload comparison. [Result and local repair](runs/2026-10-10-tiny-first.md). A repaired attempt uses the same limits under Abel's subsequent authorization to continue below $100. The first GPU environment check passed. This next job tests whether a real pretrained Qwen3-0.6B model can train, persist and resume a QLoRA adapter on rented hardware. Two optimizer steps are a software check, not a personality prototype or a comparison with prompting.
+October 10, 2026. Abel approved this one check; **submitted** as [6aca728a095c578089314c80](https://huggingface.co/jobs/abelcable/6aca728a095c578089314c80). It failed after the first optimizer step at the reload comparison. [Result and local repair](runs/2026-10-10-tiny-first.md). The [repaired attempt passed](runs/2026-10-10-tiny-success.md) under Abel's subsequent authorization to continue below $100. The first GPU environment check passed. This next job tests whether a real pretrained Qwen3-0.6B model can train, persist and resume a QLoRA adapter on rented hardware. Two optimizer steps are a software check, not a personality prototype or a comparison with prompting.
 
 ## Proposed job
 
@@ -51,4 +51,4 @@ For the repaired attempt, Abel's authorization to continue preparation under $10
 
 Any source, configuration, rate or Git revision change requires a fresh plan and verification. Another human approval is needed if spending leaves the authorized preparation scope. The launcher checks the expected account, private destination, active jobs, actual rate and cumulative budget again. Its ledger retains unknown liabilities. The local ledger cannot prevent manually launched jobs outside the harness.
 
-**Next decision:** None; run the repaired tiny check after local regression tests pass, within the cumulative preparation cap.
+**Next decision:** None; proceed to the 14B preparation check within the authorized cumulative cap.

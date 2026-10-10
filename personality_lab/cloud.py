@@ -19,12 +19,18 @@ IMAGE = "pytorch/pytorch@sha256:417bd75df6365104c283ea4c1651fb3530d9eb5a4c2fafa5
 ACCOUNT = "abelcable"
 REPO = "abelcable/agent-personality-qwen3-14b"
 TERMINAL = {"COMPLETED", "CANCELED", "ERROR", "DELETED"}
+STAGES = {
+    "environment": ("l4x1", 1800, "0.80", "environment", 600, None),
+    "tiny-check": ("l4x1", 3600, "0.80", "tiny_check", 1800, "configs/tiny-check.json"),
+    "14b-smoke": ("a100-large", 5400, "2.51", "training", 4200, "configs/14b-smoke.json"),
+}
 
 
 def source_bundle():
     files = [p for folder in ("personality_lab", "scripts", "configs", "data", "tests")
              for p in (ROOT / folder).rglob("*") if p.is_file() and p.suffix in (".py", ".json", ".jsonl")]
-    files += [ROOT / name for name in ("requirements-lab.txt", "requirements-gpu.txt", "requirements-gpu-resolved.txt")]
+    files += [ROOT / name for name in ("requirements-lab.txt", "requirements-gpu.txt", "requirements-gpu-resolved.txt",
+                                      "configs/disposition.txt")]
     raw = io.BytesIO()
     with gzip.GzipFile(fileobj=raw, mode="wb", mtime=0) as compressed:
         with tarfile.open(fileobj=compressed, mode="w") as archive:
@@ -45,39 +51,46 @@ def verify_account(api):
         raise ValueError("An unresolved provider job is present; do not submit another")
 
 
-def current_rate(api):
+def current_rate(api, flavor="l4x1"):
     hardware = api.list_jobs_hardware()
-    item = next(h for h in hardware if h.name == "l4x1")
+    item = next(h for h in hardware if h.name == flavor)
     # Prices are provider USD per hour; use minute rate too where supplied.
     if item.unit_label != "minute":
         raise ValueError("Unknown provider billing unit")
-    return str(max(Decimal("0.80"), Decimal(str(item.unit_cost_usd)) * 60))
+    floor = Decimal("0.80" if flavor == "l4x1" else "2.50")
+    return str(max(floor, Decimal(str(item.unit_cost_usd)) * 60))
 
 
-def plan(rate="0.80", stage="environment"):
-    if stage not in ("environment", "tiny-check"):
-        raise ValueError("Only environment and tiny-check stages are supported")
+def plan(rate=None, stage="environment"):
+    if stage not in STAGES:
+        raise ValueError("Unknown bounded preparation stage")
+    flavor, timeout, default_rate, _, _, recipe_path = STAGES[stage]
+    rate = default_rate if rate is None else rate
     load_episodes(ROOT / "data/development.jsonl")
     _, source_sha = source_bundle()
     source_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     content = {"schema": 1, "stage": stage, "account": ACCOUNT, "repo": REPO,
-               "image": IMAGE, "flavor": "l4x1", "timeout_seconds": 1800 if stage == "environment" else 3600, "attempts": 1,
+               "image": IMAGE, "flavor": flavor, "timeout_seconds": timeout, "attempts": 1,
                "hourly_rate_usd": rate, "extras_max_usd": "1.00", "source_bundle_sha256": source_sha,
-               "git_commit": source_commit, "downloads_model_weights": stage == "tiny-check"}
-    if stage == "tiny-check":
+               "git_commit": source_commit, "downloads_model_weights": stage != "environment"}
+    if recipe_path:
         from dataclasses import asdict
-        recipe = Recipe.load(ROOT / "configs/tiny-check.json")
-        if recipe.model_id != "Qwen/Qwen3-0.6B" or recipe.max_steps != 2:
-            raise ValueError("Expected two-step tiny recipe")
+        recipe = Recipe.load(ROOT / recipe_path)
+        expected_model, expected_steps = ("Qwen/Qwen3-0.6B", 2) if stage == "tiny-check" else ("Qwen/Qwen3-14B", 20)
+        if recipe.model_id != expected_model or recipe.max_steps != expected_steps:
+            raise ValueError("Expected bounded model recipe")
         content["recipe"] = asdict(recipe)
+    if stage == "14b-smoke":
+        content["demo"] = {"cases": "data/demo-prompts.json", "max_new_tokens": 192,
+                           "do_sample": False, "enable_thinking": False, "conditions": 4}
     return {"plan": content, "approval_sha256": digest(content)}
 
 
 def bootstrap(source_sha, run_id, stage="environment"):
-    if stage not in ("environment", "tiny-check"):
+    if stage not in STAGES:
         raise ValueError("Unknown stage")
-    module = "environment" if stage == "environment" else "tiny_check"
-    deadline = 600 if stage == "environment" else 1800
+    _, _, _, module, deadline, recipe_path = STAGES[stage]
+    extra = ',"--recipe","configs/14b-smoke.json","--demo"' if stage == "14b-smoke" else ""
     # No secret values in command/spec/records; token is passed only through provider secrets.
     return f'''import hashlib,io,os,pathlib,subprocess,tarfile,urllib.request
 url="https://huggingface.co/{REPO}/resolve/main/preparation/source/{source_sha}.tar.gz"
@@ -90,7 +103,7 @@ with tarfile.open(fileobj=io.BytesIO(content),mode="r:gz") as archive:
   assert member.isfile() and not pathlib.Path(member.name).is_absolute() and ".." not in pathlib.Path(member.name).parts,"Unsafe archive"
  archive.extractall(root,filter="data")
 subprocess.run(["python","-m","pip","install","--disable-pip-version-check","-r","requirements-gpu-resolved.txt"],cwd=root,check=True,timeout=900)
-subprocess.run(["python","-m","personality_lab.{module}","--run-id","{run_id}","--persist-repo","{REPO}"],cwd=root,check=True,timeout={deadline})
+subprocess.run(["python","-m","personality_lab.{module}","--run-id","{run_id}","--persist-repo","{REPO}"{extra}],cwd=root,check=True,timeout={deadline})
 '''
 
 
@@ -99,9 +112,10 @@ def submit(api, ledger, reviewed, approval, token):
     if reviewed != expected or approval != expected["approval_sha256"]:
         raise ValueError("Reviewed source or plan changed; prepare and review again")
     verify_account(api)
-    if Decimal(current_rate(api)) > Decimal(expected["plan"]["hourly_rate_usd"]):
+    if Decimal(current_rate(api, expected["plan"]["flavor"])) > Decimal(expected["plan"]["hourly_rate_usd"]):
         raise ValueError("Live hardware price exceeds reviewed rate")
-    run_id = ("env-" if expected["plan"]["stage"] == "environment" else "tiny-") + uuid.uuid4().hex[:12]
+    prefix = {"environment": "env-", "tiny-check": "tiny-", "14b-smoke": "q14-"}[expected["plan"]["stage"]]
+    run_id = prefix + uuid.uuid4().hex[:12]
     spec = expected["plan"]
     content, source_sha = source_bundle()
     if source_sha != spec["source_bundle_sha256"]:
@@ -126,7 +140,7 @@ def main():
     parser.add_argument("--ledger", default="artifacts/budget.sqlite")
     parser.add_argument("--approve-plan")
     parser.add_argument("--job-id")
-    parser.add_argument("--stage", choices=("environment", "tiny-check"), default="environment")
+    parser.add_argument("--stage", choices=tuple(STAGES), default="environment")
     args = parser.parse_args()
     ledger = Ledger(args.ledger)
     if args.action == "prepare":

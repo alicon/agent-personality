@@ -14,6 +14,7 @@ class FakeApi:
         self.account, self.private, self.active, self.price = "abelcable", True, False, .013333
         self.submissions, self.uploads = [], []
         self.lose_response = False
+        self.a100_price = .041667
     def whoami(self):
         return {"name": self.account}
     def model_info(self, repo):
@@ -21,7 +22,8 @@ class FakeApi:
     def list_jobs(self, **kwargs):
         return [SimpleNamespace(status=SimpleNamespace(stage="RUNNING"))] if self.active else []
     def list_jobs_hardware(self):
-        return [SimpleNamespace(name="l4x1", unit_label="minute", unit_cost_usd=self.price)]
+        return [SimpleNamespace(name="l4x1", unit_label="minute", unit_cost_usd=self.price),
+                SimpleNamespace(name="a100-large", unit_label="minute", unit_cost_usd=self.a100_price)]
     def upload_file(self, **kwargs):
         self.uploads.append(kwargs)
     def run_job(self, **kwargs):
@@ -112,6 +114,24 @@ class BudgetTests(unittest.TestCase):
         reviewed["plan"]["recipe"]["max_steps"] = 300
         with tempfile.TemporaryDirectory() as directory:
             api = FakeApi()
+            with self.assertRaises(ValueError):
+                submit(api, Ledger(Path(directory) / "budget.sqlite"), reviewed, reviewed["approval_sha256"], "fake-test-token")
+            self.assertFalse(api.uploads)
+
+    def test_target_model_run_uses_live_a100_rate_and_bounded_demo(self):
+        with tempfile.TemporaryDirectory() as directory:
+            reviewed = plan(stage="14b-smoke")
+            api = FakeApi()
+            ledger = Ledger(Path(directory) / "budget.sqlite")
+            submit(api, ledger, reviewed, reviewed["approval_sha256"], "fake-test-token")
+            spec = api.submissions[0]
+            self.assertEqual((spec["flavor"], spec["timeout"], spec["attempts"]), ("a100-large", 5400, 1))
+            self.assertIn('"--recipe","configs/14b-smoke.json","--demo"', spec["command"][2])
+            compile(spec["command"][2], "reviewed-bootstrap", "exec")
+            self.assertEqual(ledger.summary()["reserved"], "4.77")
+        with tempfile.TemporaryDirectory() as directory:
+            api = FakeApi()
+            api.a100_price = .05
             with self.assertRaises(ValueError):
                 submit(api, Ledger(Path(directory) / "budget.sqlite"), reviewed, reviewed["approval_sha256"], "fake-test-token")
             self.assertFalse(api.uploads)
