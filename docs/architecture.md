@@ -2,6 +2,8 @@
 
 Status: proposed architecture. No baseline protection, adapter, specialist router, or serving system is implemented or deployed.
 
+Current implementation order is governed by the [training-first decision](decisions/0001-training-first.md). The [training plan](training-plan.md) starts with a substantial Hugging Face adapter and chat lab; historical drift diagnosis is a separate workstream. The [business north star](product-north-star.md) calls for customer-controlled execution and organizational calibration.
+
 ## Protected prompt baseline
 
 Keep a short, versioned core disposition under an owner-controlled write boundary. A launcher verifies the selected version and injects its exact bytes at the appropriate instruction level. Task agents can propose amendments; promotion is a separate operation.
@@ -66,8 +68,8 @@ Start with conservative, explicit routing for difficult scientific tasks. Measur
 
 ## Adoption
 
-Promote the least complex approach that meets the correction-effort target and preserves judgment. The protected prompt baseline may be enough. An adapter may help. A hybrid may win. Evidence should choose among them.
+For deployment, promote the least complex approach that meets the correction-effort target and preserves judgment. For the hobby build, train the adapter first as Abel requested. The protected prompt baseline may be enough for production, an adapter may help, or a hybrid may win. Evidence should choose among them.
 
 Record response latency, specialist-call rate, compute cost, and operational maintenance alongside collaboration quality. A personable front end that adds delays or silently changes conclusions has not met the goal.
 
-**Next decision:** None at this stage; run the diagnostic pilot and establish the protected prompt baseline before selecting training hardware or a deployment architecture.
+**Next decision:** Abel creates a Hugging Face account for the training-first build. Next action: implement the trainer and lab described in the training plan; choose deployment architecture after comparative evidence exists.

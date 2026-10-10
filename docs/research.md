@@ -4,7 +4,7 @@ Reviewed October 10, 2026.
 
 The practical target is less repeated correction during useful work. A stable persona can still be exhausting, flattering, rigid, or incapable of adapting to an engineering colleague versus an executive.
 
-The evidence supports testing learned disposition, but does not establish that putting personality into weights solves long-session drift. Diagnose the current system first.
+The evidence supports testing learned disposition, but does not establish that putting personality into weights solves long-session drift. Diagnosing the current system remains useful; the [accepted training-first direction](decisions/0001-training-first.md) lets the hobby build proceed alongside it.
 
 ## What the research establishes
 
@@ -40,8 +40,8 @@ Each item is a proposed mitigation. None has been validated in this repository.
 
 ## Recommendation
 
-Run the [small diagnostic experiment](experiment.md), then establish a protected prompt baseline. Compare a learned adapter on the same base model before treating a smaller social model plus frontier specialists as an architecture choice.
+Build the adapter and chat lab under the [training plan](training-plan.md). Establish a protected prompt baseline and compare on the same base model before treating a smaller social model plus specialists as an architecture choice. The [small diagnostic experiment](experiment.md) remains a separate investigation into the existing system.
 
 The architecture is plausible. Its value remains a hypothesis: it might reduce corrective effort, or merely relocate the errors to routing and the presentation of specialist findings. The [comparison plan](architecture.md) makes those failure modes observable.
 
-**Next decision:** None for the investigation package. Next action: establish observable instruction provenance and calibrate the scoring examples before running the pilot.
+**Next decision:** None for the investigation package. Next action: prepare the training build and calibrate the scoring examples.
