@@ -1,6 +1,6 @@
 # Build a personality lab, then a paper
 
-Date: October 10, 2026. Status: build and study plan. [Local login and private Hub repositories](setup.md) are ready under abelcable; no GPU jobs, model training, or billing changes have been performed by the agent.
+Date: October 10, 2026. Status: build and study plan; [local implementation and first run review](build-review.md) ready. [Local login and private Hub repositories](setup.md) are ready under abelcable; no GPU jobs, model training, or billing changes have been performed by the agent.
 
 Abel wants the enjoyment of training a real model now, with a publication and potential business asset as longer-term goals. The planning budget is $1,000–$2,000 using rented GPUs. That range is not authorization to spend.
 
@@ -38,7 +38,7 @@ The model card lists Apache-2.0, 14.8 billion parameters, a native 32,768-token 
 
 Public Hub metadata checked in this session reported revision 40c069824f4251a91eefaf281ebe4c544efd3e18 for 14B and b968826d9c46dd6066d109eabc6255188de91218 for the optional Qwen3-8B replication. Both were public and ungated. Reconfirm the selected revision before the first run.
 
-Lock library versions and the container after a working smoke test. Do not use moving package or model branches for the paper runs.
+The current implementation pins the image and resolves Linux dependencies before the first environment smoke. It uses Transformers Trainer with tested assistant masks; TRL and preference optimization remain later work. Confirm runtime compatibility and preserve the working environment after a successful smoke test. Do not use moving package or model branches for the paper runs.
 
 ## Accounts and setup Abel needs
 
@@ -97,7 +97,9 @@ Suggested allocation for a $1,500 campaign:
 
 These are envelopes, not service quotes or a promise of publication-quality results at that cost. Runtime depends on tokens, hardware throughput, and experiment scope. Use the $1,000 end for one primary model and a narrower study; use up to $2,000 for replication and extra human validation. Do not run an always-on GPU endpoint by default.
 
-For the current preparation phase, use the [staged budget and stop rules](preparation-phase.md). Target $20–$40 cumulatively, enforce the $90 working limit with a $9 reserve, and limit any proposed individual GPU job to two hours and $5 of GPU charges. A provider timeout limits one job, not the whole campaign; record and reconcile cumulative costs. The local estimator does not yet enforce cloud launches.
+For the current preparation phase, use the [staged budget and stop rules](preparation-phase.md). Target $20–$40 cumulatively, enforce the $90 working limit with a $9 reserve, and limit any proposed individual GPU job to two hours and $5 of GPU charges. A provider timeout limits one job, not the whole campaign; record and reconcile cumulative costs. The local launcher now reserves cumulative liability atomically and requires the reviewed source/specification digest. Its provider interactions are tested with mocks; the first live environment run remains pending review.
+
+A [cost feasibility note](cost-feasibility.md) separates a useful prototype from a convincing comparative study. [Personality calibration](personality-calibration.md) captures Abel’s preferences before expanding the corpus.
 
 ## From the toy to a paper
 
@@ -140,4 +142,4 @@ Abel owns the scientific claims, reviews sources and results, and makes the publ
 
 Keep the repository private during development. Decide the public research release separately from the commercial package and any customer-specific assets. A generic dataset and adapter may be releasable; customer documents, examples, memories, and adapters remain customer-controlled.
 
-**Next decision:** None for account setup. Next action for the agent: implement the reproducible trainer, dataset tooling, and chat lab; present a bounded first GPU run for approval once it is ready.
+**Next decision:** Abel reviews the [local implementation and first bounded GPU proposal](build-review.md), then decides whether to fund and approve that environment job.

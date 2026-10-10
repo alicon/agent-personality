@@ -8,12 +8,15 @@ The target is a warm, socially aware colleague with reasoned independence: able 
 
 This repository contains a research review, a training and paper plan, a commercial hypothesis, a proposed diagnostic experiment, and eight invented behavioral probes. No drift experiment or personality training has run. The cause of drift in Abel's system remains undiagnosed.
 
-Hugging Face local login and two private artifact repositories are ready under abelcable. The trainer and chat lab remain planned. See [setup and reproduction](docs/setup.md).
+Hugging Face local login and two private artifact repositories are ready under abelcable. The trainer, invented-data pipeline, local Gradio lab, and spending launcher are implemented and tested locally. CUDA training and learned behavior remain untested. See the [build review and first paid proposal](docs/build-review.md).
 
-The current milestone is [preparation below $100](docs/preparation-phase.md): build locally first, then run short GPU smoke tests. A tested local cost calculator is available; cloud submission controls and the training harness remain planned.
+The current milestone is [preparation below $100](docs/preparation-phase.md): build locally first, then run short GPU smoke tests. Atomic local spending reservations and an approval-bound environment launcher are available. No paid job has been submitted.
 
 The current direction is to build a Hugging Face personality adapter and a chat lab first, then compare it fairly with prompting. The commercial target is a customer-hosted harness that organizations tune themselves. Molecular-diagnostics assay-development and bioinformatics teams are the proposed first market.
 
+- [Try the lab and review the first $1.40 reservation](docs/build-review.md)
+- [Capture personality through choices](docs/personality-calibration.md)
+- [Prototype and study cost feasibility](docs/cost-feasibility.md)
 - [Training build, accounts, budget, and paper](docs/training-plan.md)
 - [Commercial north star](docs/product-north-star.md)
 - [Competitors and molecular-diagnostics first market](docs/market-landscape.md)
@@ -53,6 +56,10 @@ Run:
 
     python3 -m unittest discover -s tests -v
 
-These checks validate the research package's links and probe structure. They do not test model behavior or establish that a mitigation works.
+These checks validate repository integrity, data, lab controls, and mocked cloud spending safeguards. For all checks, including real CPU adapter save/reload/resume and cached Qwen token masking, run:
+
+    .venv-lab/bin/python -m unittest discover -s tests -v
+
+Neither suite evaluates pretrained-model personality or establishes that a mitigation works. [Setup](docs/setup.md) explains the separate local lab environment.
 
 Agent guidance is in [CLAUDE.md](CLAUDE.md). This repository does not install or modify a live personality.

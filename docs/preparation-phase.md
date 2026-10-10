@@ -1,6 +1,6 @@
 # Prepare and debug before a full training run
 
-Date: October 10, 2026. Status: accepted preparation budget and proposed execution stages. No paid runs have started. This document narrows the first build; the larger research campaign remains a planning budget.
+Date: October 10, 2026. Status: local harness implemented and tested; first environment job ready for review. No paid runs have started. This document narrows the first build; the larger research campaign remains a planning budget.
 
 Abel wants the enjoyment of building without an open-ended GPU debugging bill. Keep the preparation phase below $100 cumulatively. Use a $90 working limit across all paid services, with $9 reserved for billing rounding or unexpected ancillary charges. The resulting $99 ceiling includes failed runs and retries, not just successful training. Target $20–$40, and spend only what resolves a concrete uncertainty.
 
@@ -44,7 +44,7 @@ Current published rates are L4 $0.80/hour and A100 80 GB $2.50/hour. The propose
 6. Save logs with non-sensitive diagnostics and record run IDs, status, duration, artifacts, and costs. A terminal disconnect or closing a log view does not cancel a job. Confirm terminal job status and reconcile billing after each run.
 7. Stop before a launch would exceed the $90 working limit. The $9 reserve is not another debugging allowance. A full corpus, long-context study, repeated training seeds, or larger research campaign requires a new decision after the preparation results are reviewable.
 
-These controls are a required launcher design and operating policy. They have not yet been integrated with a cloud launcher or tested against live billing. The local cost calculator estimates one job against entered liabilities; it does not submit jobs, maintain a ledger, or enforce an account-wide provider cap. Manually started jobs can bypass it.
+The local environment launcher now implements source-bound approval, account/destination checks, one-attempt provider timeouts, and atomic cumulative reservations. Tests simulate provider submission and billing failures; live billing and execution remain untested. Unknown submission outcomes retain their reservation. The calculator remains a separate estimate. The launcher supports only the first environment stage, and cannot enforce an account-wide cap or prevent manually started jobs. See the [review package](build-review.md) for evidence and the $1.40 maximum-reservation proposal.
 
 ## What success buys us
 
@@ -52,4 +52,4 @@ The preparation phase should produce a working end-to-end development adapter an
 
 Before a full run, review the development responses and verify that every required check passed. Spending the remaining preparation allowance is not itself a goal.
 
-**Next decision:** None for local work. Next action: implement and test the local harness; make the first short GPU job reviewable before Abel funds and approves it.
+**Next decision:** Abel reviews the [completed local build and first proposal](build-review.md), then decides whether to fund and approve that one environment smoke. No paid job is queued.

@@ -1,0 +1,220 @@
+"""Bounded assistant-only QLoRA training; CPU fixtures test mechanics, not behavior."""
+import argparse
+from dataclasses import asdict, dataclass
+from functools import partial
+import hashlib
+import importlib.metadata
+import json
+import math
+import os
+from pathlib import Path
+import re
+import signal
+import time
+
+from personality_lab.data import collate, digest, encode_episode, load_episodes
+
+
+@dataclass(frozen=True)
+class Recipe:
+    model_id: str
+    model_revision: str
+    data: str
+    max_length: int
+    max_steps: int
+    gradient_accumulation_steps: int
+    learning_rate: float
+    lora_rank: int
+    seed: int
+    soft_timeout_seconds: int
+    output: str
+    quantization: str
+
+    @classmethod
+    def load(cls, path):
+        recipe = cls(**json.loads(Path(path).read_text()))
+        if recipe.model_id not in ("Qwen/Qwen3-14B", "Qwen/Qwen3-0.6B") or not re.fullmatch(r"[0-9a-f]{40}", recipe.model_revision):
+            raise ValueError("Supported model and immutable revision required")
+        for name, limit in (("max_length", 4096), ("max_steps", 30), ("gradient_accumulation_steps", 16),
+                            ("lora_rank", 64), ("soft_timeout_seconds", 6000)):
+            value = getattr(recipe, name)
+            if type(value) is not int or not 0 < value <= limit:
+                raise ValueError(f"Invalid bounded {name}")
+        if type(recipe.seed) is not int or not 0 <= recipe.seed < 2**32:
+            raise ValueError("Invalid seed")
+        if not isinstance(recipe.learning_rate, (int, float)) or not math.isfinite(recipe.learning_rate) or not 0 < recipe.learning_rate <= .001:
+            raise ValueError("Invalid learning rate")
+        if recipe.quantization != "nf4":
+            raise ValueError("GPU smoke recipes require NF4")
+        output = Path(recipe.output)
+        if output.is_absolute() or ".." in output.parts or output.parts[0] != "artifacts":
+            raise ValueError("Output must be inside artifacts/")
+        return recipe
+
+
+def add_adapter(model, rank):
+    from peft import LoraConfig, get_peft_model
+    return get_peft_model(model, LoraConfig(r=rank, lora_alpha=2*rank, lora_dropout=0,
+                           target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+                           bias="none", task_type="CAUSAL_LM"))
+
+
+def environment_manifest():
+    import platform
+    packages = {}
+    for name in ("torch", "transformers", "peft", "accelerate", "bitsandbytes", "huggingface_hub", "tokenizers", "safetensors"):
+        try:
+            packages[name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            packages[name] = None
+    return {"python": platform.python_version(), "platform": platform.system(), "packages": packages}
+
+
+def persist_folder(output, run_id, repo):
+    if repo is None:
+        return None
+    from huggingface_hub import HfApi
+    api = HfApi()
+    if api.whoami()["name"] != "abelcable" or repo != "abelcable/agent-personality-qwen3-14b" or not api.model_info(repo).private:
+        raise ValueError("Expected account and private model destination required")
+    commit = api.upload_folder(repo_id=repo, folder_path=str(output), path_in_repo=f"preparation/runs/{run_id}",
+                               commit_message=f"Preparation artifact {run_id}")
+    return commit.oid
+
+
+def fit(model, train_rows, validation_rows, tokenizer, recipe, output, *, cpu=False, resume=None, upload=None):
+    import torch
+    from transformers import Trainer, TrainerCallback, TrainingArguments
+    started, stop = time.monotonic(), {"requested": False}
+
+    class Checks(TrainerCallback):
+        def on_step_end(self, args, state, control, **kwargs):
+            if stop["requested"] or time.monotonic() - started >= recipe.soft_timeout_seconds:
+                control.should_training_stop = True
+                control.should_save = True
+            return control
+
+        def on_log(self, args, state, control, logs=None, **kwargs):
+            for key in ("loss", "eval_loss", "grad_norm"):
+                if logs and key in logs and not math.isfinite(float(logs[key])):
+                    raise RuntimeError("Nonfinite training metric")
+
+        def on_save(self, args, state, control, **kwargs):
+            if upload:
+                upload()
+
+    arguments = TrainingArguments(output_dir=str(output), max_steps=recipe.max_steps, learning_rate=recipe.learning_rate,
+        per_device_train_batch_size=1, per_device_eval_batch_size=1,
+        gradient_accumulation_steps=recipe.gradient_accumulation_steps, logging_steps=1, save_steps=min(5, recipe.max_steps),
+        save_total_limit=2, eval_strategy="no", report_to=[], seed=recipe.seed, data_seed=recipe.seed,
+        bf16=not cpu, use_cpu=cpu, gradient_checkpointing=not cpu,
+        gradient_checkpointing_kwargs={"use_reentrant": False}, optim="adamw_torch",
+        remove_unused_columns=False, dataloader_pin_memory=not cpu, disable_tqdm=True)
+    trainer = Trainer(model=model, args=arguments, train_dataset=train_rows, eval_dataset=validation_rows,
+                      data_collator=partial(collate, pad_token_id=tokenizer.pad_token_id), callbacks=[Checks()])
+    old_handlers = {}
+    for sig in (signal.SIGTERM, signal.SIGINT):
+        try:
+            old_handlers[sig] = signal.signal(sig, lambda *_: stop.update(requested=True))
+        except ValueError:  # Running in a thread, e.g. a local test.
+            pass
+    try:
+        train_result = trainer.train(resume_from_checkpoint=resume)
+        trainer.save_model(str(output / "adapter"))
+        tokenizer.save_pretrained(output / "adapter")
+        evaluation = trainer.evaluate()
+        if not math.isfinite(evaluation["eval_loss"]):
+            raise RuntimeError("Nonfinite validation loss")
+        metrics = {"training": train_result.metrics, "validation": evaluation, "steps": trainer.state.global_step,
+                   "elapsed_seconds": time.monotonic() - started, "stopped_early": trainer.state.global_step < recipe.max_steps,
+                   "peak_vram_bytes": torch.cuda.max_memory_allocated() if not cpu else 0}
+        (output / "metrics.json").write_text(json.dumps(metrics, indent=2))
+        return metrics
+    finally:
+        for sig, handler in old_handlers.items():
+            signal.signal(sig, handler)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--recipe", required=True)
+    parser.add_argument("--run-id", required=True)
+    parser.add_argument("--persist-repo")
+    parser.add_argument("--resume")
+    args = parser.parse_args()
+    if not re.fullmatch(r"[a-zA-Z0-9_-]{1,80}", args.run_id):
+        parser.error("Simple run ID required")
+    recipe = Recipe.load(args.recipe)
+    import torch
+    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, set_seed
+    from peft import prepare_model_for_kbit_training, PeftModel
+    if not torch.cuda.is_available() or not torch.cuda.is_bf16_supported():
+        raise RuntimeError("CUDA GPU with bfloat16 support required; do not silently fall back")
+    set_seed(recipe.seed)
+    rows = load_episodes(recipe.data)
+    tokenizer = AutoTokenizer.from_pretrained(recipe.model_id, revision=recipe.model_revision)
+    encoded = [(row["split"], encode_episode(row, tokenizer, recipe.max_length)) for row in rows]
+    output = Path(recipe.output) / args.run_id
+    if output.exists() and not args.resume:
+        raise ValueError("Refusing to overwrite an existing run")
+    output.mkdir(parents=True, exist_ok=True)
+    manifest = {"status": "started", "recipe": asdict(recipe), "data_sha256": digest(rows),
+                "chat_template_sha256": hashlib.sha256(tokenizer.chat_template.encode()).hexdigest(),
+                "environment": environment_manifest(), "boundary": "local Transformers inputs, not a frontier API",
+                "data_review": "agent-authored development fixtures; not calibrated to Abel", "run_id": args.run_id,
+                "source": {"bundle_sha256": os.environ.get("PERSONALITY_SOURCE_SHA256"),
+                           "git_commit": os.environ.get("PERSONALITY_SOURCE_COMMIT"),
+                           "trainer_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}}
+    (output / "manifest.json").write_text(json.dumps(manifest, indent=2))
+    if args.resume:
+        prior = json.loads((Path(args.resume).parent / "manifest.json").read_text())
+        keys = ("model_id", "model_revision", "lora_rank", "seed", "quantization", "max_length", "gradient_accumulation_steps", "learning_rate")
+        checkpoint_state = json.loads((Path(args.resume) / "trainer_state.json").read_text())
+        if checkpoint_state["global_step"] >= recipe.max_steps:
+            raise ValueError("Checkpoint has already reached the requested step limit")
+        if prior["data_sha256"] != manifest["data_sha256"] or any(prior["recipe"][k] != manifest["recipe"][k] for k in keys):
+            raise ValueError("Resume checkpoint provenance mismatch")
+    quant = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.bfloat16,
+                              bnb_4bit_use_double_quant=True)
+    model = AutoModelForCausalLM.from_pretrained(recipe.model_id, revision=recipe.model_revision,
+                                               quantization_config=quant, device_map={"": 0}, dtype=torch.bfloat16)
+    model.config.use_cache = False
+    model = add_adapter(prepare_model_for_kbit_training(model), recipe.lora_rank)
+    before = {name: value.detach().cpu().clone() for name, value in model.named_parameters() if value.requires_grad}
+    manifest["trainable_parameters"] = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    try:
+        metrics = fit(model, [r for s, r in encoded if s == "train"], [r for s, r in encoded if s == "validation"],
+                      tokenizer, recipe, output, resume=args.resume,
+                      upload=lambda: persist_folder(output, args.run_id, args.persist_repo))
+        if not any(not torch.equal(before[n], p.detach().cpu()) for n, p in model.named_parameters() if n in before):
+            raise RuntimeError("Adapter weights did not change")
+        # Reload against the identical frozen base without allocating a second 14B model.
+        sample = collate([encoded[0][1]], tokenizer.pad_token_id)
+        sample = {k: v.to(model.device) for k, v in sample.items()}
+        model.eval()
+        with torch.no_grad():
+            trained_logits = model(**sample).logits.detach().cpu()
+            with model.disable_adapter():
+                base_logits = model(**sample).logits.detach().cpu()
+        if torch.allclose(trained_logits, base_logits):
+            raise RuntimeError("Adapter-on/off produces no detectable difference")
+        base = model.unload()
+        del base.peft_config
+        restored = PeftModel.from_pretrained(base, output / "adapter")
+        restored.eval()
+        with torch.no_grad():
+            reloaded_logits = restored(**sample).logits.detach().cpu()
+        if not torch.allclose(trained_logits, reloaded_logits, atol=.02, rtol=.02):
+            raise RuntimeError("Saved adapter reload mismatch")
+        manifest.update(status="completed" if not metrics["stopped_early"] else "stopped_early",
+                        adapter_changed=True, reload_checked=True, behavior_evaluated=False)
+    except BaseException:
+        manifest["status"] = "failed"
+        raise
+    finally:
+        (output / "manifest.json").write_text(json.dumps(manifest, indent=2))
+        persist_folder(output, args.run_id, args.persist_repo)
+
+
+if __name__ == "__main__":
+    main()

@@ -16,7 +16,7 @@ class ResearchPackageTests(unittest.TestCase):
 
     def test_local_document_links_resolve(self):
         for path in ROOT.rglob("*.md"):
-            if ".git" in path.parts or path.name == "AGENTS.md":
+            if any(part.startswith(".") for part in path.relative_to(ROOT).parts) or path.name == "AGENTS.md":
                 continue
             for destination in re.findall(r"\[[^\]]*\]\(([^)]+)\)", path.read_text()):
                 if re.match(r"^[a-z]+://", destination) or destination.startswith("#"):
