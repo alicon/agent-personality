@@ -1,6 +1,6 @@
 # Build a personality lab, then a paper
 
-Date: October 10, 2026. Status: build and study plan; [local implementation and first run review](build-review.md) ready. [Local login and private Hub repositories](setup.md) are ready under abelcable; the first approved GPU environment check passed. The [tiny GPU training/reload/resume check passed](runs/2026-10-10-tiny-success.md). The actual 14B path remains pending.
+Date: October 10, 2026. Status: build and study plan; [local implementation and first run review](build-review.md) ready. [Local login and private Hub repositories](setup.md) are ready under abelcable; the first approved GPU environment check passed. The [tiny GPU training/reload/resume check passed](runs/2026-10-10-tiny-success.md). The [14B short-example training/reload run passed](runs/2026-10-10-14b-smoke.md) and sixteen saved replies can be compared locally. Interactive pretrained-model chat and personality effectiveness remain pending.
 
 Abel wants the enjoyment of training a real model now, with a publication and potential business asset as longer-term goals. The planning budget is $1,000–$2,000 using rented GPUs. That range is not authorization to spend.
 
@@ -43,9 +43,9 @@ The current implementation pins the image and resolves Linux dependencies before
 ## Accounts and setup Abel needs
 
 1. Completed: Abel supplied the [abelcable account](https://huggingface.co/abelcable) and authorized local browser/device login. [Setup record](setup.md).
-2. Completed: Abel deposited $100 and approved one environment check, which passed. Further job spending requires a reviewed proposal. Do not enable automatic refills.
+2. Completed: Abel deposited $100 and approved one environment check, which passed. Continued bounded preparation is authorized below $100; the $1,000–$2,000 campaign is still a planning range. Do not enable automatic refills.
 3. Completed: local CLI authentication and private model/dataset repository creation. The completed environment run verified Jobs authorization and scheduling. Keep credentials in local login or job secrets, outside chat. [Token documentation](https://huggingface.co/docs/hub/security-tokens).
-4. Review the next tiny training proposal after the trainer, dataset, runtime limits and cost cap are reviewable.
+4. Completed: tiny GPU recovery and the 14B short-example path. Next, calibrate examples and finish interactive pretrained-model chat.
 
 GitHub is already available. No second GPU-cloud account is required for the recommended path. Hugging Face PRO is optional: current Jobs documentation allows any account with a positive compute-credit balance. The environment run established eligibility and one successful allocation; availability remains checked before each launch. [Jobs pricing and billing](https://huggingface.co/docs/hub/jobs-pricing).
 
@@ -97,7 +97,7 @@ Suggested allocation for a $1,500 campaign:
 
 These are envelopes, not service quotes or a promise of publication-quality results at that cost. Runtime depends on tokens, hardware throughput, and experiment scope. Use the $1,000 end for one primary model and a narrower study; use up to $2,000 for replication and extra human validation. Do not run an always-on GPU endpoint by default.
 
-For the current preparation phase, use the [staged budget and stop rules](preparation-phase.md). Target $20–$40 cumulatively, enforce the $90 working limit with a $9 reserve, and limit any proposed individual GPU job to two hours and $5 of GPU charges. A provider timeout limits one job, not the whole campaign; record and reconcile cumulative costs. The local launcher now reserves cumulative liability atomically and requires the reviewed source/specification digest. Its provider interactions are tested with mocks; the first approved live environment check passed. The tiny GPU training path passed; 14B execution remains untested; see the [run record](runs/2026-10-10-environment.md).
+For the current preparation phase, use the [staged budget and stop rules](preparation-phase.md). Target $20–$40 cumulatively, enforce the $90 working limit with a $9 reserve, and limit any proposed individual GPU job to two hours and $5 of GPU charges. A provider timeout limits one job, not the whole campaign; record and reconcile cumulative costs. The local launcher now reserves cumulative liability atomically and requires the reviewed source/specification digest. Its provider interactions are tested with mocks; the first approved live environment check passed. Tiny GPU recovery and actual 14B short-example execution passed. Reported cumulative usage is $0.46; see the [14B run record](runs/2026-10-10-14b-smoke.md).
 
 A [cost feasibility note](cost-feasibility.md) separates a useful prototype from a convincing comparative study. [Personality calibration](personality-calibration.md) captures Abel’s preferences before expanding the corpus.
 
@@ -142,4 +142,4 @@ Abel owns the scientific claims, reviews sources and results, and makes the publ
 
 Keep the repository private during development. Decide the public research release separately from the commercial package and any customer-specific assets. A generic dataset and adapter may be releasable; customer documents, examples, memories, and adapters remain customer-controlled.
 
-**Next decision:** None; follow the approved [tiny training check](tiny-training-review.md) and retrieve its artifacts after completion.
+**Next decision:** None for spending; review development replies and calibrate the corpus before a larger personality run.

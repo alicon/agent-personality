@@ -6,16 +6,16 @@ The target is a warm, socially aware colleague with reasoned independence: able 
 
 ## Current state
 
-This repository contains a research review, a training and paper plan, a commercial hypothesis, a proposed diagnostic experiment, and eight invented behavioral probes. No drift experiment or personality behavior evaluation has run. The first tiny-model attempt failed reload validation; a repaired attempt passed GPU training/reload/resume. [Successful result](docs/runs/2026-10-10-tiny-success.md). The cause of drift in Abel's system remains undiagnosed.
+This repository contains a research review, a training and paper plan, a commercial hypothesis, a proposed diagnostic experiment, and eight invented behavioral probes. No formal drift or personality-effectiveness evaluation has run. Tiny GPU training/reload/resume passed. The first 14B adapter also trained and reloaded successfully; sixteen real development replies are available in the local app. [14B result and limits](docs/runs/2026-10-10-14b-smoke.md). The cause of drift in Abel's system remains undiagnosed.
 
-Hugging Face local login and two private artifact repositories are ready under abelcable. The trainer, invented-data pipeline, local Gradio lab, and spending launcher are implemented and tested locally. Tiny CUDA training, adapter switching, reload, optimizer resume and private artifact recovery passed. The 14B path remains untested. Learned behavior remains untested. See the [build review and first paid proposal](docs/build-review.md).
+Hugging Face local login and two private artifact repositories are ready under abelcable. The trainer, invented-data pipeline, local Gradio lab, and spending launcher are implemented and tested locally. Tiny CUDA training, adapter switching, reload, optimizer resume and private artifact recovery passed. The actual 14B short-example path passed. Personality effectiveness and durability remain untested. See the [build review and first paid proposal](docs/build-review.md).
 
-The current milestone is [preparation below $100](docs/preparation-phase.md): build locally first, then run short GPU smoke tests. Atomic local spending reservations and an approval-bound environment launcher are available. The first paid environment check passed; Reported cumulative Jobs usage is $0.08; prior reservations are reconciled. Continued preparation is authorized below $100. [Result and limits](docs/runs/2026-10-10-environment.md).
+The current milestone is [preparation below $100](docs/preparation-phase.md): build locally first, then run short GPU smoke tests. Atomic local spending reservations and an approval-bound environment launcher are available. The first paid environment check passed. Reported cumulative Jobs usage is $0.46; all reservations are reconciled. Continued preparation is authorized below $100. [Latest result and limits](docs/runs/2026-10-10-14b-smoke.md).
 
 The current direction is to build a Hugging Face personality adapter and a chat lab first, then compare it fairly with prompting. The commercial target is a customer-hosted harness that organizations tune themselves. Molecular-diagnostics assay-development and bioinformatics teams are the proposed first market.
 
 - [Try the lab and review the completed environment check](docs/build-review.md)
-- [Review the next tiny training check: $1.80 maximum reservation](docs/tiny-training-review.md)
+- [Try sixteen real 14B replies and inspect the adapter result](docs/runs/2026-10-10-14b-smoke.md)
 - [Capture personality through choices](docs/personality-calibration.md)
 - [Prototype and study cost feasibility](docs/cost-feasibility.md)
 - [Training build, accounts, budget, and paper](docs/training-plan.md)

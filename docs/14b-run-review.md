@@ -1,6 +1,6 @@
 # Bounded 14B training and example run
 
-October 10, 2026. Prepared under Abel's authorization to continue below $100. The [tiny training/reload/resume check passed](runs/2026-10-10-tiny-success.md); reported cumulative usage is $0.08. This job exercises the actual 14B model and saves illustrative replies to inspect.
+October 10, 2026. This proposal completed successfully: [adapter, saved replies and reported cost](runs/2026-10-10-14b-smoke.md). Prepared under Abel's authorization to continue below $100. The [tiny training/reload/resume check passed](runs/2026-10-10-tiny-success.md); reported cumulative usage is $0.08. This job exercises the actual 14B model and saves illustrative replies to inspect.
 
 One Hugging Face a100-large (80 GB) runs once with a 90-minute provider timeout and no automatic retries. The rate ceiling is $2.51/hour, slightly above the published $2.50 to accommodate the provider's rounded minute quote. GPU liability rounds up to **$3.77**, plus $1 ancillary allowance: **$4.77 maximum reservation**. Preflight checks the actual A100 rate, account, private repository, active jobs and cumulative ledger again. This job does not create a serving endpoint or recurring schedule.
 
@@ -20,4 +20,4 @@ Prepare without submission:
 
 Submit only that prepared source/configuration digest after local checks and budget verification. Any changed source needs a fresh plan. Abel's cumulative preparation authorization covers this bounded job; spending outside that scope needs a separate decision.
 
-**Next decision:** None; complete the local checks, run this bounded job, retrieve its artifacts and assess the illustrative replies.
+**Next decision:** None for spending; inspect the completed run's saved replies and calibrate the corpus.

@@ -154,13 +154,17 @@ class Session:
                 for arm, condition in self.record["condition_by_arm"].items()}
 
 
-def build_app(backend=None):
+def build_app(backend=None, demo_path=None):
     import gradio as gr
     disposition = Path("configs/disposition.txt").read_text().strip()
     with gr.Blocks(title="Personality lab", analytics_enabled=False) as app:
+        gr.Markdown("# Personality lab")
+        if demo_path:
+            from personality_lab.recorded_demo import add_recorded_ui
+            add_recorded_ui(demo_path)
         from personality_lab.calibration import add_calibration_ui
         add_calibration_ui()
-        gr.Markdown("# Personality lab\nLocal comparison workspace. **Default backend is simulated: no model is loaded.** Use invented examples here.\n\nCorrection counts are recorded; the follow-up timer measures wall time, not active effort. Shared follow-ups are for comparison; a study of effort needs separate conversations for each condition.")
+        gr.Markdown("## Conversation controls\n**Default chat backend is simulated: no model is loaded for live conversation.** Use invented examples here.\n\nCorrection counts are recorded; the follow-up timer measures wall time, not active effort. Shared follow-ups are for comparison; a study of effort needs separate conversations for each condition.")
         state = gr.State(None)
         with gr.Row():
             left = gr.Dropdown(list(CONDITIONS), value="prompt-only", label="First condition")
@@ -218,11 +222,12 @@ def main():
     parser.add_argument("--recipe", default="configs/14b-smoke.json")
     parser.add_argument("--adapter-path")
     parser.add_argument("--port", type=int, default=7860)
+    parser.add_argument("--demo-path", help="Show saved model replies without paid inference")
     args = parser.parse_args()
     if args.backend == "transformers" and not args.adapter_path:
         parser.error("Explicit adapter path required for real-model mode")
     backend = TransformersBackend(args.recipe, args.adapter_path) if args.backend == "transformers" else MockBackend()
-    build_app(backend).launch(server_name="127.0.0.1", server_port=args.port, share=False, inbrowser=False)
+    build_app(backend, args.demo_path).launch(server_name="127.0.0.1", server_port=args.port, share=False, inbrowser=False)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # Hugging Face setup
 
-Checked October 10, 2026. Local harness is implemented; the first GPU environment check passed. tiny GPU training/reload/resume passed. The actual 14B path and personality effectiveness remain untested.
+Checked October 10, 2026. Local harness is implemented; the first GPU environment check passed. Tiny GPU training/reload/resume and the actual 14B short-example path passed. [14B result](runs/2026-10-10-14b-smoke.md). Personality effectiveness and durability remain untested.
 
 ## Current resources
 
@@ -8,7 +8,7 @@ Checked October 10, 2026. Local harness is implemented; the first GPU environmen
 - Private model repository: [agent-personality-qwen3-14b](https://huggingface.co/abelcable/agent-personality-qwen3-14b).
 - Private dataset repository: [agent-personality-dialogues](https://huggingface.co/datasets/abelcable/agent-personality-dialogues).
 
-Authentication was verified against the expected account. Both repositories were created through the Hub API and their private visibility was checked. They contain no uploaded training corpus or learned checkpoint yet. One approved environment job completed; the model repository now contains its source bundle and report. No endpoint or paid Space was started.
+Authentication was verified against the expected account. Both repositories were created through the Hub API and their private visibility was checked. The dataset repository has no uploaded curated corpus. The model repository contains private source bundles, run reports, tiny and 14B adapters and checkpoints. The development fixtures are bundled invented software inputs, not a reviewed corpus. No endpoint or paid Space was started.
 
 The local CLI is huggingface_hub 2.2.0, installed in this project's ignored .venv using Python 3.13.2. The [bootstrap requirements](../requirements-bootstrap.txt) pin the installed packages. This is Hub tooling, not the future Linux/CUDA training environment.
 
@@ -41,21 +41,21 @@ The tokenizer check downloads public tokenizer files, not model weights or paid 
 
 Development data can be reproduced with python3 scripts/build_development_data.py. This writes fifty invented fixtures with explicit unreviewed status. Calibration choices and chat traces stay in ignored artifacts/. Never commit tokens or private work transcripts.
 
-The next reviewed proposal is the [two-step tiny training/resume check](tiny-training-review.md). Prepare it with `--stage tiny-check --plan artifacts/tiny-training-plan.json`; preparation starts no job.
+The [two-step tiny training/resume check](runs/2026-10-10-tiny-success.md) and [bounded 14B run](runs/2026-10-10-14b-smoke.md) completed. The latter report gives the local command for browsing actual saved replies without inference charges. Live chat still defaults to simulated replies.
 
 The GPU training entry point is personality_lab.training with --recipe configs/tiny-smoke.json or configs/14b-smoke.json, a unique --run-id, and optional --persist-repo. It refuses a CUDA-free fallback. Recipes are limited smoke configurations, not full campaign recipes. Standard Transformers Trainer is used with explicitly verified assistant masks; TRL/preference optimization is deferred.
 
 ## Reviewed cloud execution only
 
-The [first proposal](build-review.md) is a thirty-minute environment check, with at most $0.40 in GPU time and $1.00 ancillary reservation. Abel funded $100 and approved that one check; it completed successfully. [Result and billing status](runs/2026-10-10-environment.md). Further jobs require separate review. The larger research range remains a planning budget.
+The [first proposal](build-review.md) is a thirty-minute environment check, with at most $0.40 in GPU time and $1.00 ancillary reservation. Abel funded $100 and approved that one check; it completed successfully. [Result and billing status](runs/2026-10-10-environment.md). Abel subsequently authorized continued bounded preparation under $100; separate approval per preparation job is no longer required. The larger research range remains a planning budget.
 
 Prepare without submission:
 
     .venv/bin/python -m personality_lab.cloud prepare
 
-After explicit human approval, submit using the exact approval_sha256 from artifacts/first-run.json:
+Within the currently authorized preparation scope, submit only the exact prepared plan digest. The approval_sha256 binds source and configuration; it is not a new human permission ceremony. For a new stage use its own --plan path and digest:
 
-    .venv/bin/python -m personality_lab.cloud submit --approve-plan REVIEWED_DIGEST
+    .venv/bin/python -m personality_lab.cloud submit --plan PREPARED_PLAN_PATH --approve-plan REVIEWED_DIGEST
 
 The local ledger is artifacts/budget.sqlite. Preserve it across sessions. An interrupted submit may have started a remote job: do not discard the reservation or rerun while uncertain. Find the job by its project/reservation labels using the read-only Jobs listing. Never print full job specs because they can include secrets.
 
@@ -64,12 +64,12 @@ Inspect or cancel explicitly:
     .venv/bin/python -m personality_lab.cloud status --job-id JOB_ID
     .venv/bin/python -m personality_lab.cloud cancel --job-id JOB_ID
 
-Confirm a terminal status, retrieve the private environment.json artifact, and inspect billing. Reconcile only the actual charge, including ancillary charges, with the reservation returned at launch:
+Confirm a terminal status, retrieve and verify that stage's private artifacts, and inspect itemized reported billing. Reconcile only the actual charge, including ancillary charges, with the reservation returned at launch:
 
-    .venv/bin/python -m personality_lab.budget --reconcile RESERVATION_ID --actual INVOICE_USD --terminal-status COMPLETED
+    .venv/bin/python -m personality_lab.budget --reconcile RESERVATION_ID --actual REPORTED_CHARGE_USD --terminal-status COMPLETED
 
 If a submission response was lost, retain maximum liability until the job or confirmed non-submission is established. The CONFIRMED_NOT_SUBMITTED reconciliation status is for that established case, never an assumption from a network error. The provider timeout remains active if the terminal disconnects. Closing Gradio or a log view does not cancel a cloud job.
 
-The first environment job established successful GPU scheduling and artifact persistence. The first job is reconciled against repeat-verified itemized Jobs usage of $0.03. The credit balance still disagrees, so the run record distinguishes reported usage from the final monthly invoice. Tiny-model training/reload/resume passed; 14B capacity remains untested.
+The first environment job established successful GPU scheduling and artifact persistence. The first job is reconciled against repeat-verified itemized Jobs usage of $0.03. The credit balance still disagrees, so the run record distinguishes reported usage from the final monthly invoice. Tiny-model training/reload/resume and short-example 14B training/reload passed. Reported cumulative Jobs usage is $0.46 and no reservation remains unresolved. Longer-context capacity and personality effectiveness remain untested.
 
-**Next decision:** None; follow the separately approved [tiny training check](tiny-training-review.md), retrieve its artifacts and record reported cost after completion.
+**Next decision:** None for spending; inspect the saved replies and calibrate the examples before a larger personality run.

@@ -2,7 +2,7 @@
 
 Date: October 10, 2026. Abel subsequently authorized continued preparation under $100, without approval for each individual bounded check. Retain the $90 working limit and $9 reserve; the larger research campaign still needs a separate decision.
 
-Status: local harness implemented and tested; first approved environment job passed. Jobs billing reports $0.03; the first reservation is reconciled against repeat-verified itemized reported usage. [Run record](runs/2026-10-10-environment.md). This document narrows the first build; the larger research campaign remains a planning budget.
+Status: environment and tiny recovery checks passed. The 14B adapter trained, reloaded and produced sixteen saved replies. Reported cumulative Jobs usage is $0.46; all reservations are reconciled. [Latest run record](runs/2026-10-10-14b-smoke.md). This document narrows the first build; the larger research campaign remains a planning budget.
 
 Abel wants the enjoyment of building without an open-ended GPU debugging bill. Keep the preparation phase below $100 cumulatively. Use a $90 working limit across all paid services, with $9 reserved for billing rounding or unexpected ancillary charges. The resulting $99 ceiling includes failed runs and retries, not just successful training. Target $20–$40, and spend only what resolves a concrete uncertainty.
 
@@ -46,7 +46,7 @@ Current published rates are L4 $0.80/hour and A100 80 GB $2.50/hour. The propose
 6. Save logs with non-sensitive diagnostics and record run IDs, status, duration, artifacts, and costs. A terminal disconnect or closing a log view does not cancel a job. Confirm terminal job status and reconcile billing after each run.
 7. Stop before a launch would exceed the $90 working limit. The $9 reserve is not another debugging allowance. A full corpus, long-context study, repeated training seeds, or larger research campaign requires a new decision after the preparation results are reviewable.
 
-The local environment launcher now implements source-bound approval, account/destination checks, one-attempt provider timeouts, and atomic cumulative reservations. Tests simulate provider submission and billing failures; the first live environment check passed; the first reported charge is reconciled; any running job retains its own maximum reservation. Unknown submission outcomes retain their reservation. The calculator remains a separate estimate. The launcher supports the environment stage and the separately reviewed [tiny training check](tiny-training-review.md), and cannot enforce an account-wide cap or prevent manually started jobs. See the [review package](build-review.md) for evidence and the $1.40 maximum-reservation proposal.
+The local environment launcher now implements source-bound approval, account/destination checks, one-attempt provider timeouts, and atomic cumulative reservations. Tests simulate provider submission and billing failures; the first live environment check passed; the first reported charge is reconciled; any running job retains its own maximum reservation. Unknown submission outcomes retain their reservation. The calculator remains a separate estimate. The launcher supports environment, tiny training and bounded 14B stages, and cannot enforce an account-wide cap or prevent manually started jobs. See the [review package](build-review.md) for evidence and the $1.40 maximum-reservation proposal.
 
 ## What success buys us
 
@@ -54,4 +54,4 @@ The preparation phase should produce a working end-to-end development adapter an
 
 Before a full run, review the development responses and verify that every required check passed. Spending the remaining preparation allowance is not itself a goal.
 
-**Next decision:** None; repair and validate the tiny training path within the authorized preparation cap. Reassess after a second remote failure on the same issue.
+**Next decision:** None for spending; inspect the real saved replies, calibrate training contrasts and plan bounded interactive chat. Reassess after a second remote failure on the same issue.

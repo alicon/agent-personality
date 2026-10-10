@@ -1,0 +1,130 @@
+{
+  "run": {
+    "job_id": "6aca7693fee2c9007018ab40",
+    "reservation": "q14-60fc11a776c4",
+    "url": "https://huggingface.co/jobs/abelcable/6aca7693fee2c9007018ab40",
+    "status": "COMPLETED",
+    "created_at": "2026-10-10 17:32:03.700000+00:00",
+    "started_at": "2026-10-10 17:32:08.638000+00:00",
+    "finished_at": "2026-10-10 17:40:36.017000+00:00",
+    "max_reservation_usd": "4.77",
+    "authorization": "continued preparation under $100",
+    "source_commit": "6609646240c1a7616980aa3da8519f1d2f842cc0",
+    "artifact_revision": "034df8c0881b1c8398db86822c945ef10d5c7397",
+    "recovered_directory": "/Users/abellicon/Documents/ChatGPT/Personality/artifacts/recovered/q14-60fc11a776c4"
+  },
+  "manifest": {
+    "status": "completed",
+    "recipe": {
+      "model_id": "Qwen/Qwen3-14B",
+      "model_revision": "40c069824f4251a91eefaf281ebe4c544efd3e18",
+      "data": "data/development.jsonl",
+      "max_length": 4096,
+      "max_steps": 20,
+      "gradient_accumulation_steps": 4,
+      "learning_rate": 0.0001,
+      "lora_rank": 32,
+      "seed": 41,
+      "soft_timeout_seconds": 3600,
+      "output": "artifacts/14b-smoke",
+      "quantization": "nf4"
+    },
+    "data_sha256": "a67e26e08730760c189a5de31ffd44fb8cc0af644c01ba00535ada4e253283ed",
+    "chat_template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+    "environment": {
+      "python": "3.11.13",
+      "platform": "Linux",
+      "packages": {
+        "torch": "2.8.0+cu128",
+        "transformers": "4.57.1",
+        "peft": "0.17.1",
+        "accelerate": "1.10.1",
+        "bitsandbytes": "0.47.0",
+        "huggingface_hub": "0.36.0",
+        "tokenizers": "0.22.2",
+        "safetensors": "0.8.0"
+      }
+    },
+    "boundary": "local Transformers inputs, not a frontier API",
+    "data_review": "agent-authored development fixtures; not calibrated to Abel",
+    "run_id": "q14-60fc11a776c4",
+    "source": {
+      "bundle_sha256": "8288617091be16fb506fd4062e34a46aaea3fe3e81d49f222d7b3a553f7b66d8",
+      "git_commit": "6609646240c1a7616980aa3da8519f1d2f842cc0",
+      "trainer_sha256": "adad19acca51e7b87fe7c0321c20f06de00d3026d4a4d17e573d4005fae436cd"
+    },
+    "trainable_parameters": 128450560,
+    "adapter_changed": true,
+    "inference_check": {
+      "autocast": "bfloat16",
+      "comparison_dtype": "float32",
+      "training_forward_wrapper_removed": true
+    },
+    "adapter_on_off_max_abs_delta": 26.75,
+    "reload_max_abs_delta": 0.0,
+    "reload_checked": true,
+    "behavior_evaluated": false,
+    "demo_status": "completed",
+    "demo": {
+      "cases": 4,
+      "replies": 16,
+      "length_limited_replies": 5
+    }
+  },
+  "metrics": {
+    "training": {
+      "train_runtime": 145.2642,
+      "train_samples_per_second": 0.551,
+      "train_steps_per_second": 0.138,
+      "train_loss": 1.652165624499321,
+      "epoch": 2.0
+    },
+    "validation": {
+      "eval_loss": 2.2570395469665527,
+      "eval_runtime": 2.0172,
+      "eval_samples_per_second": 4.957,
+      "eval_steps_per_second": 4.957,
+      "epoch": 2.0
+    },
+    "steps": 20,
+    "optimizer_step_values": [
+      20
+    ],
+    "elapsed_seconds": 149.0190143350046,
+    "stopped_early": false,
+    "peak_vram_bytes": 17509948416
+  },
+  "recovery": {
+    "adapter_bytes": 513877864,
+    "adapter_sha256": "40fdbcd0f6545ff7c11be2f1c60c433bc893b4d4f65601d5c604c86bdc0563d9",
+    "finite_tensor_count": 560,
+    "adapter_parameters": 128450560,
+    "recovered_after_terminal": true,
+    "recovered_artifact_revision": "034df8c0881b1c8398db86822c945ef10d5c7397"
+  },
+  "billing": {
+    "source": "Authenticated visible Hugging Face billing page, itemized Current period usage, read twice after terminal job",
+    "reported_jobs_usage_usd": "0.46",
+    "reported_a100_usage_usd": "0.38",
+    "reported_l4_usage_usd": "0.08",
+    "reported_inference_and_storage_usage": "No usage",
+    "credit_balance_usd": "99.58",
+    "automatic_recharge": "disabled",
+    "private_storage_gb": 6.3,
+    "private_storage_included_gb": 100,
+    "reservation_reconciliation_basis": "Terminal COMPLETED and reported A100 itemized subtotal, not credit balance or duration estimate",
+    "final_monthly_invoice": false,
+    "balance_discrepancy": "Reported usage and credit balance differ by $0.04; cause not established",
+    "recorded_at_utc": "2026-10-10T17:45:01.876765+00:00"
+  },
+  "ledger": {
+    "spent": "0.46",
+    "reserved": "0",
+    "unresolved_jobs": 0
+  },
+  "behavior_evaluation": false,
+  "illustrative_replies": 16,
+  "length_limited_replies": 5,
+  "interactive_pretrained_chat": false,
+  "local_tests": 47
+}

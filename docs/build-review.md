@@ -1,6 +1,6 @@
-# Review before the first paid run
+# Local lab and the first paid-run review
 
-October 10, 2026. The first approved GPU environment check passed. Jobs billing reports **$0.03**; the first reservation is now reconciled against repeat-verified reported usage. [Run record](runs/2026-10-10-environment.md). This package does not establish learned personality.
+October 10, 2026. Environment, tiny training/recovery and the actual 14B short-example path passed. Reported cumulative Jobs usage is **$0.46** and all reservations are reconciled. [Latest result](runs/2026-10-10-14b-smoke.md). This package does not establish improved or durable personality. The first paid proposal below is retained as a historical record.
 
 ## What you can try now
 
@@ -8,7 +8,7 @@ From this repository, start the local lab:
 
     .venv-lab/bin/python -m personality_lab.lab
 
-Open http://127.0.0.1:7860. The interface includes twelve [personality calibration situations](../data/calibration.json), a simulated comparison, hidden condition labels, and correction recording. It binds to this computer only; it creates no public sharing link. All default replies explicitly say they are simulated.
+Use the command in the [14B result](runs/2026-10-10-14b-smoke.md) to include sixteen real saved replies, with no inference cost while browsing. Live chat remains simulated. Open http://127.0.0.1:7860. The interface also includes twelve [personality calibration situations](../data/calibration.json), a simulated comparison, hidden condition labels, and correction recording. It binds to this computer only; it creates no public sharing link. All default replies explicitly say they are simulated.
 
 Pick A, B, both, or neither on the calibration cards, and explain what feels right or offer your own rewrite. Choices stay in ignored local artifacts and never trigger training. Taste and factual judgment are marked separately: a preferred response that misstates evidence is not automatically a good training target. [How calibration works](personality-calibration.md).
 
@@ -24,9 +24,9 @@ The correction timer measures wall time between marking a reply and the follow-u
 - Local Gradio requests exercised session creation, paired replies, correction recording, and follow-up. Session records survive restart; interrupted timing remains missing rather than being reconstructed.
 - Atomic spending reservations prevent concurrent launches through the local launcher. A lost submission response retains the maximum liability and blocks another launch. Wrong account, public artifact destination, an active provider job, changed source/specification, higher live rate, and excess budget fail before submission. Provider submission is mocked in tests.
 
-Verification: 35 tests pass in the lab environment, including the four ML/tokenizer tests. The required system-Python suite also passes, with those four optional tests skipped. Dependency checks and Python static checks pass. No pretrained-model behavior evaluations have run. The first remote check now verifies CUDA/NF4 execution, provider scheduling and private report persistence. GPU model training and the actual 14B memory/throughput path remain untested.
+Verification: 47 tests pass in the lab environment. The required system-Python suite passes with six optional ML/tokenizer checks skipped. Static checks pass. Tiny GPU training/reload/resume, actual 14B short-example training/reload, recovered adapter bytes, all sixteen saved reply identities and local viewer callbacks passed. No formal pretrained-model personality or drift evaluation has run.
 
-## First paid proposal
+## Historical first paid proposal
 
 The first job checks the GPU environment and artifact persistence. It **does not download model weights or train a model**. If it fails, we inspect and repair before proposing another attempt.
 
@@ -51,8 +51,8 @@ Prepare the exact source-bound proposal after reviewing the code:
 
     .venv/bin/python -m personality_lab.cloud prepare
 
-This writes ignored artifacts/first-run.json and initializes the local ledger without submitting. The eventual submit command requires that proposal's approval digest; the agent will use it only after Abel approves spending. The environment stage completed. The launcher now also supports the separately reviewed [tiny training check](tiny-training-review.md); 14B runs still require implementation and a new proposal.
+This writes ignored artifacts/first-run.json and initializes the local ledger without submitting. The eventual submit command requires that proposal's approval digest; the agent will use it only after Abel approves spending. The environment stage completed. The launcher now supports tiny and 14B stages too. The source-bound [14B proposal](14b-run-review.md) completed under Abel's later cumulative preparation authorization.
 
-A local ledger cannot enforce an account-wide spending cap or prevent manually launched jobs. Confirm final provider status and invoice cost before reconciling the reservation. Use the status/cancel commands in [setup](setup.md); disconnecting a terminal does not cancel a job. Abel deposited $100 and approved this single check. Scheduling succeeded; the billing discrepancy and retained reservation are documented in the run record. Abel separately approved the one tiny training check; the deposit does not authorize other jobs.
+A local ledger cannot enforce an account-wide spending cap or prevent manually launched jobs. Confirm terminal provider status and itemized reported charges before reconciling reservations; distinguish these from the final monthly invoice. Use the status/cancel commands in [setup](setup.md); disconnecting a terminal does not cancel a job. Abel deposited $100, approved the initial checks, then explicitly authorized continued preparation below $100. Funding alone is not that authorization.
 
-**Next decision:** None; follow the separately approved [tiny training check](tiny-training-review.md) and record its result.
+**Next decision:** None for spending; inspect the saved replies and calibrate the examples.
