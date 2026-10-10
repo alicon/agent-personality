@@ -1,6 +1,6 @@
 # Build a personality lab, then a paper
 
-Date: October 10, 2026. Status: plan; no GPU jobs, training, billing changes, or Hugging Face resources have been created.
+Date: October 10, 2026. Status: build and study plan. [Local login and private Hub repositories](setup.md) are ready under abelcable; no GPU jobs, model training, or billing changes have been performed by the agent.
 
 Abel wants the enjoyment of training a real model now, with a publication and potential business asset as longer-term goals. The planning budget is $1,000–$2,000 using rented GPUs. That range is not authorization to spend.
 
@@ -40,9 +40,9 @@ Lock library versions and the container after a working smoke test. Do not use m
 
 ## Accounts and setup Abel needs
 
-1. Create a personal [Hugging Face account](https://huggingface.co/join) and share its username.
+1. Completed: Abel supplied the [abelcable account](https://huggingface.co/abelcable) and authorized local browser/device login. [Setup record](setup.md).
 2. Enable compute billing and fund a small initial credit balance when ready to run. Start with approximately $50–$100 rather than funding the full campaign immediately.
-3. Authenticate locally through the Hugging Face CLI. Use a token with access to this project's private resources and Jobs; enter it through local login or the secrets mechanism, rather than the chat. [Token documentation](https://huggingface.co/docs/hub/security-tokens).
+3. Completed: local CLI authentication and private model/dataset repository creation. Check Jobs authorization separately before the first run. Keep credentials in local login or job secrets, outside chat. [Token documentation](https://huggingface.co/docs/hub/security-tokens).
 4. Approve a concrete first run after the trainer, dataset, expected runtime, and cost cap are reviewable.
 
 GitHub is already available. No second GPU-cloud account is required for the recommended path. Hugging Face PRO is optional: current Jobs documentation allows any account with a positive compute-credit balance. Jobs eligibility and GPU availability still need an authenticated check for the new account. [Jobs pricing and billing](https://huggingface.co/docs/hub/jobs-pricing).
@@ -138,4 +138,4 @@ Abel owns the scientific claims, reviews sources and results, and makes the publ
 
 Keep the repository private during development. Decide the public research release separately from the commercial package and any customer-specific assets. A generic dataset and adapter may be releasable; customer documents, examples, memories, and adapters remain customer-controlled.
 
-**Next decision:** Abel creates a Hugging Face account and shares its username. Next action for the agent: implement the reproducible trainer, dataset tooling, and chat lab; present a bounded first GPU run for approval once it is ready.
+**Next decision:** None for account setup. Next action for the agent: implement the reproducible trainer, dataset tooling, and chat lab; present a bounded first GPU run for approval once it is ready.

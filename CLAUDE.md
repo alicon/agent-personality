@@ -15,3 +15,5 @@ Read README.md, then the document owning the task. The current build and paper p
 - Run python3 -m unittest discover -s tests -v before handing off changes. State separately whether model evaluations ran.
 
 AGENTS.md is a local, ignored symlink to this file.
+
+Local Hub tooling, account identity, private artifact destinations, and reproduction commands are recorded in docs/setup.md. Training remains planned. Credentials stay outside the repository.

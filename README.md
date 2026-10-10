@@ -8,6 +8,8 @@ The target is a warm, socially aware colleague with reasoned independence: able 
 
 This repository contains a research review, a training and paper plan, a commercial hypothesis, a proposed diagnostic experiment, and eight invented behavioral probes. No drift experiment or personality training has run. The cause of drift in Abel's system remains undiagnosed.
 
+Hugging Face local login and two private artifact repositories are ready under abelcable. The trainer and chat lab remain planned. See [setup and reproduction](docs/setup.md).
+
 The current direction is to build a Hugging Face personality adapter and a chat lab first, then compare it fairly with prompting. The commercial target is a customer-hosted harness that organizations tune themselves. Molecular-diagnostics assay-development and bioinformatics teams are the proposed first market.
 
 - [Training build, accounts, budget, and paper](docs/training-plan.md)
