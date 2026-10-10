@@ -1,6 +1,6 @@
 # Review before the first paid run
 
-October 10, 2026. The first approved GPU environment check passed. Jobs billing reports **$0.03**; the **$1.40 reservation remains held** pending settled billing. [Run record](runs/2026-10-10-environment.md). This package does not establish learned personality.
+October 10, 2026. The first approved GPU environment check passed. Jobs billing reports **$0.03**; the first reservation is now reconciled against repeat-verified reported usage. [Run record](runs/2026-10-10-environment.md). This package does not establish learned personality.
 
 ## What you can try now
 
@@ -53,6 +53,6 @@ Prepare the exact source-bound proposal after reviewing the code:
 
 This writes ignored artifacts/first-run.json and initializes the local ledger without submitting. The eventual submit command requires that proposal's approval digest; the agent will use it only after Abel approves spending. The environment stage completed. The launcher now also supports the separately reviewed [tiny training check](tiny-training-review.md); 14B runs still require implementation and a new proposal.
 
-A local ledger cannot enforce an account-wide spending cap or prevent manually launched jobs. Confirm final provider status and invoice cost before reconciling the reservation. Use the status/cancel commands in [setup](setup.md); disconnecting a terminal does not cancel a job. Abel deposited $100 and approved this single check. Scheduling succeeded; the billing discrepancy and retained reservation are documented in the run record. The deposit does not authorize further jobs.
+A local ledger cannot enforce an account-wide spending cap or prevent manually launched jobs. Confirm final provider status and invoice cost before reconciling the reservation. Use the status/cancel commands in [setup](setup.md); disconnecting a terminal does not cancel a job. Abel deposited $100 and approved this single check. Scheduling succeeded; the billing discrepancy and retained reservation are documented in the run record. Abel separately approved the one tiny training check; the deposit does not authorize other jobs.
 
-**Next decision:** Abel reviews the [tiny training check](tiny-training-review.md); settle the first reservation before another launch.
+**Next decision:** None; follow the separately approved [tiny training check](tiny-training-review.md) and record its result.

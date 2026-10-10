@@ -35,7 +35,7 @@ def check_phase_reports(first, second, first_metrics, second_metrics):
         raise ValueError("Expected an interrupted first step and a resumed second step")
     for manifest, metrics in ((first, first_metrics), (second, second_metrics)):
         if not all(manifest.get(key) is True for key in
-                   ("adapter_changed", "reload_checked", "frozen_parameters_unchanged")):
+                   ("adapter_changed", "reload_checked", "frozen_parameters_unchanged", "reload_frozen_parameters_unchanged")):
             raise ValueError("Training, reload and frozen-parameter checks must pass")
         if not math.isfinite(metrics["validation"]["eval_loss"]):
             raise ValueError("Validation loss must be finite")

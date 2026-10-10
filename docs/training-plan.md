@@ -1,6 +1,6 @@
 # Build a personality lab, then a paper
 
-Date: October 10, 2026. Status: build and study plan; [local implementation and first run review](build-review.md) ready. [Local login and private Hub repositories](setup.md) are ready under abelcable; the first approved GPU environment check passed. No pretrained-model training has run. The [tiny training proposal](tiny-training-review.md) is ready for review.
+Date: October 10, 2026. Status: build and study plan; [local implementation and first run review](build-review.md) ready. [Local login and private Hub repositories](setup.md) are ready under abelcable; the first approved GPU environment check passed. No pretrained-model training has run. The [tiny training check](tiny-training-review.md) is separately approved and submitted; results are pending.
 
 Abel wants the enjoyment of training a real model now, with a publication and potential business asset as longer-term goals. The planning budget is $1,000–$2,000 using rented GPUs. That range is not authorization to spend.
 
@@ -142,4 +142,4 @@ Abel owns the scientific claims, reviews sources and results, and makes the publ
 
 Keep the repository private during development. Decide the public research release separately from the commercial package and any customer-specific assets. A generic dataset and adapter may be releasable; customer documents, examples, memories, and adapters remain customer-controlled.
 
-**Next decision:** Abel reviews the [tiny training check](tiny-training-review.md). Its launch remains separate from preparation and requires resolved prior billing.
+**Next decision:** None; follow the approved [tiny training check](tiny-training-review.md) and retrieve its artifacts after completion.

@@ -58,6 +58,7 @@ class ResumeProtocolTests(unittest.TestCase):
 
     def test_report_rejects_no_resume_failed_reload_changed_base_or_nonfinite_loss(self):
         common = {"adapter_changed": True, "reload_checked": True, "frozen_parameters_unchanged": True,
+                  "reload_frozen_parameters_unchanged": True,
                   "adapter_on_off_max_abs_delta": .01, "recipe": {}, "data_sha256": "data",
                   "chat_template_sha256": "template", "source": {}}
         first = dict(common, status="stopped_early")
@@ -67,6 +68,7 @@ class ResumeProtocolTests(unittest.TestCase):
         check_phase_reports(first, second, metrics1, metrics2)
         for key, value in (("resume_start_step", 0), ("reload_checked", False),
                            ("frozen_parameters_unchanged", False), ("adapter_on_off_max_abs_delta", 0),
+                           ("reload_frozen_parameters_unchanged", False),
                            ("data_sha256", "changed")):
             with self.subTest(key=key), self.assertRaises(ValueError):
                 check_phase_reports(first, dict(second, **{key: value}), metrics1, metrics2)

@@ -6,11 +6,11 @@ The target is a warm, socially aware colleague with reasoned independence: able 
 
 ## Current state
 
-This repository contains a research review, a training and paper plan, a commercial hypothesis, a proposed diagnostic experiment, and eight invented behavioral probes. No drift experiment or personality training has run. The cause of drift in Abel's system remains undiagnosed.
+This repository contains a research review, a training and paper plan, a commercial hypothesis, a proposed diagnostic experiment, and eight invented behavioral probes. No drift experiment or personality behavior evaluation has run. One tiny-model software check trained one optimizer step, then failed reload validation; [result and repair](docs/runs/2026-10-10-tiny-first.md). The cause of drift in Abel's system remains undiagnosed.
 
-Hugging Face local login and two private artifact repositories are ready under abelcable. The trainer, invented-data pipeline, local Gradio lab, and spending launcher are implemented and tested locally. CUDA training and learned behavior remain untested. See the [build review and first paid proposal](docs/build-review.md).
+Hugging Face local login and two private artifact repositories are ready under abelcable. The trainer, invented-data pipeline, local Gradio lab, and spending launcher are implemented and tested locally. The first tiny CUDA training step completed, but GPU reload and resume validation remain incomplete. Learned behavior remains untested. See the [build review and first paid proposal](docs/build-review.md).
 
-The current milestone is [preparation below $100](docs/preparation-phase.md): build locally first, then run short GPU smoke tests. Atomic local spending reservations and an approval-bound environment launcher are available. The first paid environment check passed; Jobs billing reports $0.03, with the $1.40 reservation retained pending settled billing. [Result and limits](docs/runs/2026-10-10-environment.md).
+The current milestone is [preparation below $100](docs/preparation-phase.md): build locally first, then run short GPU smoke tests. Atomic local spending reservations and an approval-bound environment launcher are available. The first paid environment check passed; Reported cumulative Jobs usage is $0.05; prior reservations are reconciled. Continued preparation is authorized below $100. [Result and limits](docs/runs/2026-10-10-environment.md).
 
 The current direction is to build a Hugging Face personality adapter and a chat lab first, then compare it fairly with prompting. The commercial target is a customer-hosted harness that organizations tune themselves. Molecular-diagnostics assay-development and bioinformatics teams are the proposed first market.
 
@@ -35,7 +35,7 @@ Build and play with a learned adapter first, following the [accepted sequencing 
 
 | Order | Ticket | Depends on |
 | --- | --- | --- |
-| P0 | [Prepare the Hugging Face trainer and bounded cloud run](https://github.com/alicon/agent-personality/issues/8) | Environment check passed; cost reconciliation pending |
+| P0 | [Prepare the Hugging Face trainer and bounded cloud run](https://github.com/alicon/agent-personality/issues/8) | Completed; environment check and reported-cost reconciliation passed |
 | P0 | [Curate training examples and reserve unseen scenarios](https://github.com/alicon/agent-personality/issues/9) | Invented examples can start |
 | P0 | [Train the first adapter](https://github.com/alicon/agent-personality/issues/5) | #8, #9 |
 | P0 | [Build the adapter-switching chat lab](https://github.com/alicon/agent-personality/issues/10) | Interface can start; trained checkpoint from #5 |

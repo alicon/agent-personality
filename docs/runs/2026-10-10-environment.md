@@ -2,7 +2,7 @@
 
 October 10, 2026. The approved one-attempt L4 check passed and the provider confirmed completion. CUDA, NF4 operations, tokenizer rendering and private artifact persistence worked. No model weights were downloaded, no model was trained, and no personality evaluation ran.
 
-Hugging Face billing displayed **$0.03 for Jobs**, representing two billed minutes on l4x1. This is current-period reported usage, not a final invoice. The same page displayed $99.99 remaining credits, which does not agree with subtracting $0.03 from the $100 deposit. The reason for that discrepancy is unconfirmed. Keep the full **$1.40 reservation** in the local ledger until the charge is settled; reconciled spend remains $0, with $0.03 separately recorded as reported usage. No additional job is authorized or running.
+Hugging Face billing displayed **$0.03 for Jobs**, representing two billed minutes on l4x1. This is current-period reported usage, not a final invoice. The same page displayed $99.99 remaining credits, which does not agree with subtracting $0.03 from the $100 deposit. The reason for that discrepancy is unconfirmed. A later read-only billing check still showed the same itemized $0.03 Jobs charge and no other usage charges. The ledger is now reconciled against **$0.03 reported usage**, releasing the $1.40 reservation. This is the provider's current-period charge, not a final monthly invoice; the unexplained balance discrepancy remains recorded. Abel separately approved the next tiny training check.
 
 ## Observed checks
 
@@ -36,4 +36,4 @@ These observations validate the environment and remote persistence. They do not 
 
 Launch, logs, status and artifact retrieval used CLI/Hub APIs. Billing was checked read-only in the browser after no billing command/method was found in the installed CLI/SDK and an authenticated HTTP attempt redirected to login. That observation does not establish that Hugging Face has no billing API.
 
-**Next decision:** None; prepare the tiny training check locally for Abel's separate review. Resolve the first job's billing reservation before another launch.
+**Next decision:** None; follow the separately approved tiny training check and record its results. The environment job's reservation is reconciled against reported usage.

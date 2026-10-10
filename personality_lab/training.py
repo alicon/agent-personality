@@ -107,11 +107,19 @@ def frozen_parameter_digest(model):
     import torch
     result = hashlib.sha256()
     for name, parameter in model.named_parameters():
-        if not parameter.requires_grad:
+        if not parameter.requires_grad and "lora_" not in name:
             result.update(name.encode())
             result.update(str((tuple(parameter.shape), parameter.dtype)).encode())
             result.update(parameter.detach().cpu().contiguous().reshape(-1).view(torch.uint8).numpy().tobytes())
     return result.hexdigest()
+
+
+def inference_logits(model, sample, *, device_type="cuda"):
+    """Use identical compute and comparison precision before and after reload."""
+    import torch
+    model.eval()
+    with torch.no_grad(), torch.autocast(device_type=device_type, dtype=torch.bfloat16):
+        return model(**sample).logits.detach().float().cpu()
 
 
 def fit(model, train_rows, validation_rows, tokenizer, recipe, output, *, cpu=False, resume=None,
@@ -160,6 +168,9 @@ def fit(model, train_rows, validation_rows, tokenizer, recipe, output, *, cpu=Fa
         evaluation = trainer.evaluate()
         if not math.isfinite(evaluation["eval_loss"]):
             raise RuntimeError("Nonfinite validation loss")
+        # Trainer/Accelerate adds a mixed-precision forward wrapper. A newly loaded
+        # PeftModel does not have it, so remove it before controlled inference.
+        trainer.accelerator.unwrap_model(model, keep_fp32_wrapper=False)
         metrics = {"training": train_result.metrics, "validation": evaluation, "steps": trainer.state.global_step,
                    "optimizer_step_values": sorted({int(state["step"]) for state in trainer.optimizer.state.values()
                                                      if "step" in state}),
@@ -228,6 +239,7 @@ def main():
                       stop_after_step=args.stop_after_step)
         if not any(not torch.equal(before[n], p.detach().cpu()) for n, p in model.named_parameters() if n in before):
             raise RuntimeError("Adapter weights did not change")
+        manifest["adapter_changed"] = True
         if frozen_before is not None:
             if frozen_before != frozen_parameter_digest(model):
                 raise RuntimeError("Frozen base parameters changed")
@@ -235,23 +247,25 @@ def main():
         # Reload against the identical frozen base without allocating a second 14B model.
         sample = collate([encoded[0][1]], tokenizer.pad_token_id)
         sample = {k: v.to(model.device) for k, v in sample.items()}
-        model.eval()
-        with torch.no_grad():
-            trained_logits = model(**sample).logits.detach().cpu()
-            with model.disable_adapter():
-                base_logits = model(**sample).logits.detach().cpu()
+        manifest["inference_check"] = {"autocast": "bfloat16", "comparison_dtype": "float32",
+                                       "training_forward_wrapper_removed": not hasattr(model, "_original_forward")}
+        trained_logits = inference_logits(model, sample)
+        with model.disable_adapter():
+            base_logits = inference_logits(model, sample)
         if torch.allclose(trained_logits, base_logits):
             raise RuntimeError("Adapter-on/off produces no detectable difference")
         manifest["adapter_on_off_max_abs_delta"] = float((trained_logits - base_logits).abs().max())
         base = model.unload()
         del base.peft_config
         restored = PeftModel.from_pretrained(base, output / "adapter")
-        restored.eval()
-        with torch.no_grad():
-            reloaded_logits = restored(**sample).logits.detach().cpu()
+        reloaded_logits = inference_logits(restored, sample)
+        manifest["reload_max_abs_delta"] = float((trained_logits - reloaded_logits).abs().max())
+        if frozen_before is not None:
+            if frozen_before != frozen_parameter_digest(restored):
+                raise RuntimeError("Frozen base parameters changed during reload")
+            manifest["reload_frozen_parameters_unchanged"] = True
         if not torch.allclose(trained_logits, reloaded_logits, atol=.02, rtol=.02):
             raise RuntimeError("Saved adapter reload mismatch")
-        manifest["reload_max_abs_delta"] = float((trained_logits - reloaded_logits).abs().max())
         manifest.update(status="completed" if not metrics["stopped_early"] else "stopped_early",
                         adapter_changed=True, reload_checked=True, behavior_evaluated=False)
     except BaseException:

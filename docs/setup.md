@@ -70,6 +70,6 @@ Confirm a terminal status, retrieve the private environment.json artifact, and i
 
 If a submission response was lost, retain maximum liability until the job or confirmed non-submission is established. The CONFIRMED_NOT_SUBMITTED reconciliation status is for that established case, never an assumption from a network error. The provider timeout remains active if the terminal disconnects. Closing Gradio or a log view does not cancel a cloud job.
 
-The first environment job established successful GPU scheduling and artifact persistence. Billing currently reports $0.03 but the credit balance disagrees; retain its $1.40 reservation until settled. Training capacity remains untested.
+The first environment job established successful GPU scheduling and artifact persistence. The first job is reconciled against repeat-verified itemized Jobs usage of $0.03. The credit balance still disagrees, so the run record distinguishes reported usage from the final monthly invoice. Training capacity remains untested.
 
-**Next decision:** Abel reviews the [tiny training check](tiny-training-review.md). No additional launch is approved, and the earlier billing reservation remains held.
+**Next decision:** None; follow the separately approved [tiny training check](tiny-training-review.md), retrieve its artifacts and record reported cost after completion.

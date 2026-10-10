@@ -12,7 +12,7 @@ try:
 except ImportError:
     HAS_ML = False
 
-from personality_lab.training import Recipe, add_adapter, fit, frozen_parameter_digest
+from personality_lab.training import Recipe, add_adapter, fit, frozen_parameter_digest, inference_logits
 from personality_lab.tiny_check import adapter_changed
 
 
@@ -24,6 +24,54 @@ class ToyTokenizer:
 
 @unittest.skipUnless(HAS_ML, "Run .venv-lab/bin/python for real CPU adapter checks")
 class CpuTrainingTests(unittest.TestCase):
+    def test_reload_checks_control_training_autocast_wrapper_and_comparison_dtype(self):
+        # Accelerate precision configuration is process-global; isolate it from
+        # the other tests' full-precision CPU Trainers.
+        import subprocess
+        import sys
+        script = ("import sys; sys.path.insert(0, 'tests'); "
+                  "from test_training_cpu import CpuTrainingTests; "
+                  "CpuTrainingTests()._check_precision_reload()")
+        result = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True, timeout=45)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def _check_precision_reload(self):
+        from accelerate import Accelerator
+        torch.set_num_threads(1)
+        torch.manual_seed(41)
+        config = Qwen3Config(vocab_size=32, hidden_size=16, intermediate_size=32, num_hidden_layers=1,
+                             num_attention_heads=2, num_key_value_heads=1, head_dim=8,
+                             bos_token_id=1, eos_token_id=2, pad_token_id=0)
+        model = add_adapter(Qwen3ForCausalLM(config), 2)
+        with torch.no_grad():
+            model.base_model.model.lm_head.weight.mul_(50)
+            for name, parameter in model.named_parameters():
+                if "lora_B" in name:
+                    parameter.normal_(0, .01)
+        sample = {"input_ids": torch.tensor([[1, 3, 4, 5, 2]])}
+        accelerator = Accelerator(cpu=True, mixed_precision="bf16")
+        model = accelerator.prepare_model(model)
+        model.eval()
+        with torch.no_grad():
+            uncontrolled_expected = model(**sample).logits.detach().float()
+        before = frozen_parameter_digest(model)
+        with tempfile.TemporaryDirectory() as directory:
+            model.save_pretrained(directory)
+            accelerator.unwrap_model(model, keep_fp32_wrapper=False)
+            self.assertFalse(hasattr(model, "_original_forward"))
+            controlled_expected = inference_logits(model, sample, device_type="cpu")
+            base = model.unload()
+            del base.peft_config
+            restored = PeftModel.from_pretrained(base, directory)
+            restored.eval()
+            with torch.no_grad():
+                uncontrolled_actual = restored(**sample).logits.detach().float()
+            self.assertFalse(torch.allclose(uncontrolled_expected, uncontrolled_actual, atol=.02, rtol=.02))
+            actual = inference_logits(restored, sample, device_type="cpu")
+            self.assertEqual(actual.dtype, torch.float32)
+            self.assertTrue(torch.equal(controlled_expected, actual))
+            self.assertEqual(before, frozen_parameter_digest(restored))
+
     def test_adapter_changes_and_can_reload_switch_and_resume(self):
         torch.set_num_threads(1)
         torch.manual_seed(41)

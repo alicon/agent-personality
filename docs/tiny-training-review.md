@@ -1,6 +1,6 @@
 # Review the tiny-model training check
 
-October 10, 2026. Ready for review; **not submitted**. The first GPU environment check passed. This next job tests whether a real pretrained Qwen3-0.6B model can train, persist and resume a QLoRA adapter on rented hardware. Two optimizer steps are a software check, not a personality prototype or a comparison with prompting.
+October 10, 2026. Abel approved this one check; **submitted** as [6aca728a095c578089314c80](https://huggingface.co/jobs/abelcable/6aca728a095c578089314c80). It failed after the first optimizer step at the reload comparison. [Result and local repair](runs/2026-10-10-tiny-first.md). A repaired attempt uses the same limits under Abel's subsequent authorization to continue below $100. The first GPU environment check passed. This next job tests whether a real pretrained Qwen3-0.6B model can train, persist and resume a QLoRA adapter on rented hardware. Two optimizer steps are a software check, not a personality prototype or a comparison with prompting.
 
 ## Proposed job
 
@@ -31,24 +31,24 @@ A failed first phase prevents the resumed phase from starting. A failed resumed 
 
 ## Local evidence and remaining uncertainty
 
-All **41 tests pass** in the lab environment. The required system-Python suite passes with five optional ML checks skipped. A random miniature CPU model proves that deliberate stop followed by reconstruction and full optimizer resume matches uninterrupted training to the tested tolerance. Tests reject changed resume provenance, missing checkpoint state, failed reload/base checks, stale optimizer counters, and mutated job approvals. Static checks pass.
+All **42 tests pass** in the lab environment. The required system-Python suite passes with six optional ML checks skipped. A random miniature CPU model proves that deliberate stop followed by reconstruction and full optimizer resume matches uninterrupted training to the tested tolerance. Tests reject changed resume provenance, missing checkpoint state, failed reload/base checks, stale optimizer counters, and mutated job approvals. Static checks pass.
 
-The actual Qwen3-0.6B tokenizer rendered all fifty fixtures locally, with at most 200 tokens per episode. These checks download tokenizer files only. No pretrained weights were downloaded locally, and no new GPU training or behavior evaluation ran.
+The actual Qwen3-0.6B tokenizer rendered all fifty fixtures locally, with at most 200 tokens per episode. These checks download tokenizer files only. No pretrained base weights were downloaded locally. The first GPU attempt trained one step; its saved adapter and optimizer checkpoint were recovered locally. No personality behavior evaluation ran.
 
-The first environment job validates CUDA/NF4 operations, but GPU training, memory consumption, adapter reload on that path and optimizer recovery remain untested. This is what the proposed job resolves. It does not answer whether learned personality is useful, durable or better than prompts. The actual 14B model requires its own later check.
+The first environment job validates CUDA/NF4 operations, but The first GPU attempt established one training step and its measured memory use; adapter reload failed and GPU optimizer recovery remains untested. This is what the proposed job resolves. It does not answer whether learned personality is useful, durable or better than prompts. The actual 14B model requires its own later check.
 
 ## Approval and billing boundary
 
-The $100 deposit funds the account; it does not authorize this run. Abel approved only the completed environment check. That job currently reports $0.03 usage, with its $1.40 reservation retained because the displayed credit balance disagrees. Resolve that reservation before another launch. No billing reconciliation or paid submission is performed by preparing this proposal.
+The $100 deposit funds the account; it does not authorize this run. Abel separately approved the completed environment check and this one tiny check. The first reservation is reconciled against repeat-verified itemized usage of $0.03; the unexplained credit-balance discrepancy remains in its run record. The failed job is reconciled; reported cumulative Jobs usage is $0.05. A repaired attempt reserves $1.80. Preparing a proposal performs no billing reconciliation or paid submission.
 
 Prepare the exact source-bound plan without spending:
 
     .venv/bin/python -m personality_lab.cloud prepare --stage tiny-check --plan artifacts/tiny-training-plan.json
 
-After Abel approves this one proposal and the earlier reservation is reconciled, submit with the prepared plan's exact digest:
+For the repaired attempt, Abel's authorization to continue preparation under $100 supplies spending permission. Prepare a fresh exact source-bound plan, verify local tests and the resolved prior reservation, then submit with its digest:
 
     .venv/bin/python -m personality_lab.cloud submit --plan artifacts/tiny-training-plan.json --approve-plan REVIEWED_DIGEST
 
-Any source, configuration, rate or Git revision change requires a fresh plan and review. The launcher checks the expected account, private destination, active jobs, actual rate and cumulative budget again. Its ledger retains unknown liabilities. The local ledger cannot prevent manually launched jobs outside the harness.
+Any source, configuration, rate or Git revision change requires a fresh plan and verification. Another human approval is needed if spending leaves the authorized preparation scope. The launcher checks the expected account, private destination, active jobs, actual rate and cumulative budget again. Its ledger retains unknown liabilities. The local ledger cannot prevent manually launched jobs outside the harness.
 
-**Next decision:** Abel reviews and approves this one $1.80 maximum-reservation check. Launch also requires the previous job's billing reservation to be resolved.
+**Next decision:** None; run the repaired tiny check after local regression tests pass, within the cumulative preparation cap.
